@@ -1,5 +1,3 @@
-[wzor_dok.md](https://github.com/RafalDubiel/Stacja-Benzynowa/files/14943624/wzor_dok.md)
-
 <!-- <style>
  p,li {
     font-size: 12pt;
@@ -16,9 +14,14 @@
 ---
 
 
-**Temat:** (zwięzła nazwa projektowanego systemu)
+**Temat:** 
+Baza danych stacji benzynowej
 
-**Autorzy:** (Imiona i nazwiska autorów)
+**Autorzy:** 
+Rafał Dubiel
+Daniel Antolak
+Filip Adamus
+Filip Przepiórka
 
 --- 
 
