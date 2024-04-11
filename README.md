@@ -17,7 +17,11 @@
 **Temat:**
 System do obsługi stacji benzynowej
 
-**Autorzy:** (Imiona i nazwiska autorów)
+**Autorzy:** 
+Filip Przepiórka
+Filip Adamus
+Daniel Antolak
+Rafał Dubiel
 
 --- 
 
