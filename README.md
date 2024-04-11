@@ -14,7 +14,8 @@
 ---
 
 
-**Temat:** (zwięzła nazwa projektowanego systemu)
+**Temat:**
+System do obsługi stacji benzynowej
 
 **Autorzy:** (Imiona i nazwiska autorów)
 
