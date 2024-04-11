@@ -17,13 +17,18 @@
 **Temat:**
 System do obsługi stacji benzynowej
 
-**Autorzy:** Rafał Dubiel, Daniel Antolak, Filip Adamus, Filip Przepiórka.
+**Autorzy:** 
+
+Rafał Dubiel, 
+Daniel Antolak, 
+Filip Adamus, 
+Filip Przepiórka.
 
 --- 
 
 # 1.  Zakres i krótki opis systemu
 
-(np. Cel projektu, słowny opis realizowanego systemu systemu)
+Projekt ma na celu stworzenie systemu do obsługi stacji benzynowej. W projektowanej bazie danych będą rejestrowane wszelkie informacje, wymagane do poprawnego funkcjonowania stacji. Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. 
 
 
 # 2.	Wymagania i funkcje systemu
