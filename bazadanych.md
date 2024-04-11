@@ -12,8 +12,8 @@
 
 ---
 
-**Temat:** Stacja paliw Artus
-**Autorzy:** (Imiona i nazwiska autorów)
+**Temat:** Baza danych Stacji Paliw ARTUS
+**Autorzy:** Rafał Dubiel, Filip Adamus, Filip Przepiórka, Daniel Antolak
 
 ---
 
