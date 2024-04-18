@@ -40,10 +40,21 @@ Koncesja: Aby otworzyć stację paliw, konieczne jest uzyskanie koncesji. Wniose
 Usytuowanie i zabudowa: Stacje paliw płynnych w obszarze zabudowanym muszą być oddzielone od krawędzi jezdni wysepką lub zatoką. Pawilon stacji powinien być wykonany z elementów nierozprzestrzeniających ognia1.
 
 ### Funkcje systemu stacji benzynowej:
-Obsługa klientów: System powinien umożliwiać obsługę klientów, w tym tankowanie paliwa, płatności, wydawanie paragonów itp.
-Zarządzanie zapasami: System powinien śledzić stan zapasów paliwa, olejów, akcesoriów itp.
-Bezpieczeństwo: System powinien monitorować stację, alarmować w przypadku awarii lub nieprawidłowości oraz zapewniać bezpieczeństwo pracowników i klientów.
-Raportowanie: System powinien generować raporty na temat sprzedaży, stanu zapasów, obrotu itp.
+Obsługa sprzedaży detalicznej, generowanie raportów magazynu 
+
+System powinien rejestrować istotne informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
+
+System powinien umożliwiać wyświetlanie i analizowanie danych w prosty sposób. 
+
+System powinien zawierać odpowiednie procedury służące organizacji bazy. 
+
+System powinien umożliwiać zapisanie danych firmy do faktury aby przyspieszyć proces przy następnej sprzedaży.
+
+Jako klient, chcę mieć możliwość otrzymania faktury za kupione paliwo.
+
+Jako sprzedawca chcę mieć możliwość uzyskania raportu sprzedaży z konkretnego dnia.
+
+
 
 
 # 3.	Projekt bazy danych
