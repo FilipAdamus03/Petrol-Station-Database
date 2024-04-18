@@ -33,7 +33,17 @@ Projekt ma na celu stworzenie systemu do obsługi stacji benzynowej. W projektow
 
 # 2.	Wymagania i funkcje systemu
 
-(np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.)
+(np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.) 
+
+ 
+Obsługa sprzedaży detalicznej, generowanie raportów magazynu 
+
+System powinien rejestrować istotne informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
+
+System powinien umożliwiać wyświetlanie i analizowanie danych w prosty sposób. 
+
+System powinien zawierać odpowiednie procedury służące organizacji bazy. 
+
 
 # 3.	Projekt bazy danych
 
