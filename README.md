@@ -36,13 +36,10 @@ Projekt ma na celu stworzenie systemu do obsługi stacji benzynowej. W projektow
 (np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.) 
 
 ### Funkcje systemu stacji benzynowej:
-Obsługa sprzedaży detalicznej, generowanie raportów magazynu 
 
-System powinien rejestrować istotne informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
+System powinien rejestrować wszystkie informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
 
-System powinien umożliwiać wyświetlanie i analizowanie danych w prosty sposób. 
-
-System powinien zawierać odpowiednie procedury służące organizacji bazy. 
+System powinien zawierać odpowiednie procedury i funkcje służące organizacji, zarządzaniu bazy danych. 
 
 System powinien umożliwiać zapisanie danych firmy do faktury aby przyspieszyć proces przy następnej sprzedaży.
 
@@ -50,6 +47,11 @@ Jako klient, chcę mieć możliwość otrzymania faktury za kupione paliwo.
 
 Jako sprzedawca chcę mieć możliwość uzyskania raportu sprzedaży z konkretnego dnia.
 
+System powinien rejestrować dostawy paliwa wraz z konkretną datą, ceną, ilością i typem paliwa oraz dostawcom.
+
+System powinien rejestrować jaki typ paliwa jest tankowany.
+
+System powinien przechowywać wszystkie informacje z konkretnych sprzedaży.
 
 
 
