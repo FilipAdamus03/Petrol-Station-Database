@@ -35,15 +35,24 @@ Projekt ma na celu stworzenie systemu do obsługi stacji benzynowej. W projektow
 
 (np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.) 
 
-### Wymagania techniczne:
-Koncesja: Aby otworzyć stację paliw, konieczne jest uzyskanie koncesji. Wniosek o koncesję powinien zawierać informacje o wnioskodawcy, zakresie działalności, środkach finansowych, możliwościach technicznych i zatrudnieniu osób o właściwych kwalifikacjach1.
-Usytuowanie i zabudowa: Stacje paliw płynnych w obszarze zabudowanym muszą być oddzielone od krawędzi jezdni wysepką lub zatoką. Pawilon stacji powinien być wykonany z elementów nierozprzestrzeniających ognia1.
-
 ### Funkcje systemu stacji benzynowej:
-Obsługa klientów: System powinien umożliwiać obsługę klientów, w tym tankowanie paliwa, płatności, wydawanie paragonów itp.
-Zarządzanie zapasami: System powinien śledzić stan zapasów paliwa, olejów, akcesoriów itp.
-Bezpieczeństwo: System powinien monitorować stację, alarmować w przypadku awarii lub nieprawidłowości oraz zapewniać bezpieczeństwo pracowników i klientów.
-Raportowanie: System powinien generować raporty na temat sprzedaży, stanu zapasów, obrotu itp.
+
+System powinien rejestrować wszystkie informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
+
+System powinien zawierać odpowiednie procedury i funkcje służące organizacji, zarządzaniu bazy danych. 
+
+System powinien umożliwiać zapisanie danych firmy do faktury aby przyspieszyć proces przy następnej sprzedaży.
+
+Jako klient, chcę mieć możliwość otrzymania faktury za kupione paliwo.
+
+Jako sprzedawca chcę mieć możliwość uzyskania raportu sprzedaży z konkretnego dnia.
+
+System powinien rejestrować dostawy paliwa wraz z konkretną datą, ceną, ilością i typem paliwa oraz dostawcom.
+
+System powinien rejestrować jaki typ paliwa jest tankowany.
+
+System powinien przechowywać wszystkie informacje z konkretnych sprzedaży.
+
 
 
 # 3.	Projekt bazy danych
