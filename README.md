@@ -50,12 +50,7 @@ dostawców paliwa, zapasów, klientów, transakcji oraz pracowników stacji. Bę
 generowania raportów, monitorowania zapasów oraz zarządzania transakcjami. System będzie
 dostępny dla pracowników stacji paliw oraz właściciela.
 
-Lista wymagań:
-1. Możliwość monitorowania zapasów paliwa.
-2. Zarządzanie transakcjami zakupu i sprzedaży paliwa.
-3. Przechowywanie informacji o dostawcach paliwa.
-4. Przechowywanie informacji o klientach.
-5. Przechowywanie informacji o pracownikach stacji.
+
 
 
 # 2.	Wymagania i funkcje systemu
@@ -79,6 +74,16 @@ System powinien rejestrować dostawy paliwa wraz z konkretną datą, ceną, ilo�
 System powinien rejestrować jaki typ paliwa jest tankowany.
 
 System powinien przechowywać wszystkie informacje z konkretnych sprzedaży.
+
+Możliwość monitorowania zapasów paliwa.
+
+Zarządzanie transakcjami zakupu i sprzedaży paliwa.
+   
+Przechowywanie informacji o dostawcach paliwa.
+
+Przechowywanie informacji o klientach.
+
+Przechowywanie informacji o pracownikach stacji.
 
 
 
