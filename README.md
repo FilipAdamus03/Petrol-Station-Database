@@ -36,7 +36,7 @@ Klient przyjeżdża na stacje paliw, wybiera odpowiedni dystrybutor i rodzaj pal
 Po opłaceniu rachunku przez klienta, zapisana zostanie kwota transakcji, przyznana zniżka, data, numer dystrybutora z którego pobrano paliwo, 
 pracownika który obsłużył zamówienie oraz numer samochodu .
 Klient ma możliwość zakupu paliwa na paragon lub fakturę. Do wzięcia faktury system wymaga wprowadzenia numeru NIP. 
-Klient może podać numery rejestracyjne pojazdu, nie jest to jednak wymogiem.w
+Klient może podać numery rejestracyjne pojazdu, nie jest to jednak wymogiem.
 
 System będzie pozwalał na manipulacje cenami paliwa przez pracowników, otrzymanych od
 członka zarządu stacji.
@@ -58,31 +58,27 @@ dostępny dla pracowników stacji paliw oraz właścicieli.
 
 System powinien rejestrować wszystkie informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
 
-System powinien zawierać odpowiednie procedury i funkcje służące organizacji, zarządzaniu bazy danych. 
+System powinien zawierać odpowiednie procedury, widoki i funkcje służące organizacji, analizie i zarządzaniu bazą danych. 
 
-System powinien umożliwiać zapisanie danych firmy do faktury aby przyspieszyć proces przy następnej sprzedaży.
+System powinien umożliwiać zapisanie danych firmy do faktury poprzez unikalny numer NIP, aby przyspieszyć proces przy następnej sprzedaży.
 
-Jako klient, chcę mieć możliwość otrzymania faktury za kupione paliwo.
+Jako klient, chcę mieć możliwość otrzymania faktury lub paragonu za kupione paliwo.
+
+Jako klient, chcę mieć możliwość wyboru co do podawania numeru rejestracyjnego do faktury.
 
 Jako sprzedawca chcę mieć możliwość uzyskania raportu sprzedaży z konkretnego dnia.
 
-System powinien rejestrować dostawy paliwa wraz z konkretną datą, ceną, ilością i typem paliwa oraz dostawcom.
+System powinien rejestrować dostawy paliwa wraz z konkretną datą, ceną, ilością i typem paliwa oraz dostawcą.
 
 System powinien rejestrować jaki typ paliwa jest tankowany.
 
-System powinien przechowywać wszystkie informacje z konkretnych sprzedaży.
+System powinien dać możliwość wygenerowania wszystkich informacji z konkretnych sprzedaży.
 
-Możliwość monitorowania zapasów paliwa.
+System powinien umożliwić monitorowanie zapasów paliwa.
 
-Zarządzanie transakcjami zakupu i sprzedaży paliwa.
-   
-Przechowywanie informacji o dostawcach paliwa.
+System powinien rejestrować zmiany cen paliwa.
 
-Przechowywanie informacji o klientach.
-
-Przechowywanie informacji o pracownikach stacji.
-
-
+Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 # 3.	Projekt bazy danych
 
