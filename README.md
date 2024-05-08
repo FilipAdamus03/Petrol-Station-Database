@@ -52,10 +52,6 @@ dostępny dla pracowników stacji paliw oraz właścicieli.
 
 # 2.	Wymagania i funkcje systemu
 
-(np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.) 
-
-### Funkcje systemu stacji benzynowej:
-
 System powinien rejestrować wszystkie informacje dotyczące sprzedaży paliwa, klientów, pracowników, dostaw, rozliczeń. 
 
 System powinien zawierać odpowiednie procedury, widoki i funkcje służące organizacji, analizie i zarządzaniu bazą danych. 
