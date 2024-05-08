@@ -188,11 +188,127 @@ Nazwa tabeli: invoice
 
 (dla każdej tabeli należy wkleić kod DDL polecenia tworzącego tabelę)
 
+<br>
+Tabela: employee 
+<br>
+
 ```sql
-create table tab1 (
-   a int,
-   b varchar(10)
-)
+CREATE TABLE [dbo].[employee](
+	[employee_id] [int] NOT NULL,
+	[firstname] [varchar](30) NOT NULL,
+	[lastname] [varchar](30) NOT NULL,
+	[title] [varchar](20) NOT NULL,
+	[address] [varchar](20) NOT NULL,
+	[city] [varchar](20) NOT NULL,
+	[postal_code] [varchar](10) NOT NULL,
+	[country] [varchar](20) NOT NULL,
+	[phone] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED 
+(
+	[employee_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: invoice
+<br>
+
+```sql
+CREATE TABLE [dbo].[invoice](
+	[invoice_id] [int] NOT NULL,
+	[NIP] [varchar](10) NOT NULL,
+	[plate] [varchar](20) NULL,
+ CONSTRAINT [PK_car] PRIMARY KEY CLUSTERED 
+(
+	[invoice_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: petrol
+<br>
+
+```sql
+CREATE TABLE [dbo].[petrol](
+	[petrol_id] [int] NOT NULL,
+	[supplier_id] [int] NOT NULL,
+	[name] [varchar](50) NOT NULL,
+	[in_stock] [float] NOT NULL,
+	[price] [money] NOT NULL,
+ CONSTRAINT [PK_petrol_1] PRIMARY KEY CLUSTERED 
+(
+	[petrol_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: petrol_history
+<br>
+
+```sql
+CREATE TABLE [dbo].[petrol_history](
+	[petrol_history_id] [int] NOT NULL,
+	[petrol_id] [int] NOT NULL,
+	[price] [money] NOT NULL,
+	[date] [datetime] NOT NULL,
+ CONSTRAINT [PK_petrol_history_1] PRIMARY KEY CLUSTERED 
+(
+	[petrol_history_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: pump
+<br>
+
+```sql
+CREATE TABLE [dbo].[pump](
+	[pump_id] [int] NOT NULL,
+	[petrol_id] [int] NOT NULL,
+	[distributor_no] [int] NOT NULL,
+ CONSTRAINT [PK_pump] PRIMARY KEY CLUSTERED 
+(
+	[pump_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: supplier
+<br>
+
+```sql
+CREATE TABLE [dbo].[supplier](
+	[supplier_id] [int] NOT NULL,
+	[company_name] [varchar](50) NOT NULL,
+	[postal_code] [varchar](10) NOT NULL,
+	[address] [varchar](50) NOT NULL,
+	[city] [varchar](30) NOT NULL,
+	[country] [varchar](30) NOT NULL,
+	[phone] [varchar](20) NOT NULL,
+ CONSTRAINT [PK_supplier] PRIMARY KEY CLUSTERED 
+(
+	[supplier_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: transaction
+<br>
+
+```sql
+CREATE TABLE [dbo].[transaction](
+	[transaction_id] [int] NOT NULL,
+	[pump_id] [int] NOT NULL,
+	[amount] [float] NOT NULL,
+	[discount] [float] NULL,
+	[invoice_id] [int] NULL,
+	[employee_id] [int] NOT NULL,
+	[date] [datetime] NOT NULL,
+ CONSTRAINT [PK_transaction] PRIMARY KEY CLUSTERED 
+(
+	[transaction_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 ```
 
 ## Widoki
