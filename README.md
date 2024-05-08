@@ -28,27 +28,28 @@ Filip Przepiórka.
 
 # 1.  Zakres i krótki opis systemu
 
-Projekt ma na celu stworzenie systemu do obsługi stacji benzynowej. W projektowanej bazie danych będą rejestrowane wszelkie informacje, wymagane do poprawnego funkcjonowania stacji. Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. 
+Projekt ma na celu stworzenie systemu do obsługi procesu tankowania na stacji benzynowej. W projektowanej bazie danych będą rejestrowane wszelkie informacje, wymagane do poprawnego funkcjonowania stacji. 
+Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. 
 
-Klient przyjeżdża na stacje paliw wybiera dystrybutor, pobiera określony rodzaj paliwa, zostaje
-zapisany ubytek paliwa z dystrybutora. Jeśli zapłaci za pobrane paliwo zapisana jest kwota transakcji i
-jest oznaczona jako opłacona transakcja, a jeśli nie będzie opłacona przed wyjazdem klienta, zostaje
+Klient przyjeżdża na stacje paliw wybiera dystrybutor z którego chce tankować, pobiera odpowiedni pistolet i określony rodzaj paliwa. Zatankowana ilośc paliwa zostanie odpowiednio odznaczona w bazie. 
+Jeśli klient zapłaci za zatankowane paliwo, zapisana zostanie kwota transakcji oraz jej data i
+zostanie oznaczona jako opłacona transakcja. Jeśli nie będzie opłacona przed wyjazdem klienta, zostaje
 oznaczone jako nieopłacona.
 
 Cena paliwa, może zmienić się raz na dzień przy liczeniu kasy i jest to uwzględnione przy wyliczaniu
 dochodów miesięcznych stacji paliw ze sprzedaży paliwa.
 
-Celem projektu jest stworzenie i zaimplementowanie bazy danych dla stacji paliw, która umożliwi
-sprawną obsługę procesów zakupu i sprzedaży paliwa oraz monitorowanie przepływu paliwa oraz
-generowanych przychodów i rozchodów. System ma być prosty w obsłudze i skalowalny.
-Istotą projektu jest stworzenie nowoczesnej, łatwej w obsłudze bazy danych, która pozwoli na lepsze
+Celem projektu jest stworzenie i zaimplementowanie systemu, który umożliwi
+sprawną obsługę procesów zakupu i sprzedaży paliwa oraz
+generowanych przychodów. System ma być prosty w obsłudze i skalowalny.
+Istotą projektu jest stworzenie nowoczesnej bazy, która pozwoli na lepsze
 zarządzanie stacją paliw oraz usprawnienie procesów zakupu i sprzedaży paliwa.
-Słowny opis modelowanego systemu:
 
-System będzie składać się z bazy danych, która przechowywać będzie informacje na temat
-dostawców paliwa, zapasów, klientów, transakcji oraz pracowników stacji. Będzie możliwość
-generowania raportów, monitorowania zapasów oraz zarządzania transakcjami. System będzie
-dostępny dla pracowników stacji paliw oraz właściciela.
+
+System przechowywać będzie informacje na temat
+dostawców paliwa, dystrybutorów, klientów, transakcji oraz pracowników stacji. Będzie możliwość
+generowania raportów oraz zarządzania transakcjami. System będzie
+dostępny dla pracowników stacji paliw oraz właścicieli.
 
 
 
