@@ -29,22 +29,18 @@ Filip Przepiórka.
 # 1.  Zakres i krótki opis systemu
 
 Projekt ma na celu stworzenie systemu do obsługi procesu tankowania na stacji benzynowej. W projektowanej bazie danych będą rejestrowane wszelkie informacje, wymagane do poprawnego funkcjonowania stacji. 
-Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. 
+Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. Dodatko w systemie zostaną zaimplementowanych funkcje, widoki, procedury,
+mające na celu ułatwnienie czynności związanych z obsługą stacji oraz prowadzeniem analizy danych.
 
-Klient przyjeżdża na stacje paliw wybiera dystrybutor z którego chce tankować, pobiera odpowiedni pistolet i określony rodzaj paliwa. Zatankowana ilośc paliwa zostanie odpowiednio odznaczona w bazie. 
-Jeśli klient zapłaci za zatankowane paliwo, zapisana zostanie kwota transakcji oraz jej data i
-zostanie oznaczona jako opłacona transakcja. Jeśli nie będzie opłacona przed wyjazdem klienta, zostaje
-oznaczone jako nieopłacona.
+Klient przyjeżdża na stacje paliw, wybiera odpowiedni dystrybutor i rodzaj paliwa, które chce zatankować.
+Po opłaceniu rachunku przez klienta, zapisana zostanie kwota transakcji, przyznana zniżka, data, numer dystrybutora z którego pobrano paliwo, 
+pracownika który obsłużył zamówienie oraz numer samochodu .
+Klient ma możliwość zakupu paliwa na paragon lub fakturę. Do wzięcia faktury system wymaga wprowadzenia numeru NIP. 
+Klient może podać numery rejestracyjne pojazdu, nie jest to jednak wymogiem.w
 
-Cena paliwa, może zmienić się raz na dzień przy liczeniu kasy i jest to uwzględnione przy wyliczaniu
-dochodów miesięcznych stacji paliw ze sprzedaży paliwa.
-
-Celem projektu jest stworzenie i zaimplementowanie systemu, który umożliwi
-sprawną obsługę procesów zakupu i sprzedaży paliwa oraz
-generowanych przychodów. System ma być prosty w obsłudze i skalowalny.
-Istotą projektu jest stworzenie nowoczesnej bazy, która pozwoli na lepsze
-zarządzanie stacją paliw oraz usprawnienie procesów zakupu i sprzedaży paliwa.
-
+System będzie pozwalał na manipulacje cenami paliwa przez pracowników, otrzymanych od
+członka zarządu stacji.
+Zmiany cen paliwa są rejestrowane w bazie wraz z datami, w których te zmiany zostały wprowadzone.
 
 System przechowywać będzie informacje na temat
 dostawców paliwa, dystrybutorów, klientów, transakcji oraz pracowników stacji. Będzie możliwość
@@ -93,6 +89,10 @@ Przechowywanie informacji o pracownikach stacji.
 ## Schemat bazy danych
 
 (diagram (rysunek) przedstawiający schemat bazy danych) 
+
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/76510a6d-180f-46ee-9d89-70d808c5dc15)
+
+
 
 ## Opis poszczególnych tabel
 
