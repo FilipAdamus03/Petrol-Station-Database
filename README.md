@@ -32,9 +32,11 @@ Projekt ma na celu stworzenie systemu do obsługi procesu tankowania na stacji b
 Wszystkie rekordy będą odpowiednio zapisywane w utworzonych tabelach pod unikalnymi wierszami. Dodatko w systemie zostaną zaimplementowanych funkcje, widoki, procedury,
 mające na celu ułatwnienie czynności związanych z obsługą stacji oraz prowadzeniem analizy danych.
 
-Klient przyjeżdża na stacje paliw, wybiera odpowiedni dystrybutor i rodzaj paliwa, które chce zatankować.
-Po opłaceniu rachunku przez klienta, zapisana zostanie kwota transakcji, przyznana zniżka, data, numer dystrybutora z którego pobrano paliwo, 
-pracownika który obsłużył zamówienie oraz numer samochodu .
+Klient przyjeżdża na stacje paliw, wybiera odpowiedni, czynny dystrybutor i rodzaj paliwa, które chce zatankować. Wybranie nieczynnego dystrybutora, uniemożliwi kontynuowanie procesu.
+Podnosi pistolet i zaczyna proces tankowania. Po zakończeniu czynności, musi odłożyć pistolet na swoje miejsce. Bez zakończenia procesu, klient nie może zapłacić za zatankowane paliwo.
+Odłożenie pistoletu jest wyznacznikiem zakończenia tankowania. Po odłożeniu, klient może przystąpić do płacenia.
+Po opłaceniu rachunku przez klienta, zapisana zostanie kwota transakcji, przyznana zniżka , którą klient może posiadać, data, numer dystrybutora z którego pobrano paliwo, 
+pracownika który obsłużył zamówienie oraz numer samochodu.
 Klient ma możliwość zakupu paliwa na paragon lub fakturę. Do wzięcia faktury system wymaga wprowadzenia numeru NIP. 
 Klient może podać numery rejestracyjne pojazdu, nie jest to jednak wymogiem.
 
