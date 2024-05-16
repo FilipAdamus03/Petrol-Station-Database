@@ -82,8 +82,7 @@ Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 ## Diagram przedstawiający schemat bazy danych
 
-![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/b62b7ae4-e9b1-4d69-b4b1-a8f6b5dde4fd)
-
+![image](https://github.com/FilipAdamus03/Petrol-Station-Database/assets/132128402/e81de304-7de0-489e-9871-6da5b6ef1e0e)
 
 ## Opis poszczególnych tabel
 
@@ -205,16 +204,6 @@ Nazwa tabeli: discount_history
 | value | float | Wartość rabatu |
 | start_date | datetime | Data rozpoczęcia rabatu |
 | end_date | datetime | Data zakończenia rabatu |
-
-<br>
-
-Nazwa tabeli: status
-- Opis: Tabela zawierająca status.
-
-| Nazwa atrybutu | Typ  | Opis/Uwagi |
-|----------------|------|------------|
-| status | varchar(50) | PK, status |
-
 
 <br>
 
