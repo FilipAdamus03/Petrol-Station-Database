@@ -95,7 +95,7 @@ Nazwa tabeli: petrol_history
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | petrol_history_id | int | PK, Numer ID historii paliwa |
-| petrol_id | int |FK, Numer ID paliwa |
+| petrol_id | int |FK do tabeli petrol, Numer ID paliwa |
 | price | money | Historyczna cena paliwa |
 | date | datetime | Data |
 
@@ -107,7 +107,7 @@ Nazwa tabeli: petrol
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | petrol_id | int | PK, Numer ID paliwa |
-| supplier_id | int | FK, Numer ID dostawcy paliwa |
+| supplier_id | int | FK do tabeli supplier, Numer ID dostawcy paliwa |
 | name | varchar(50) | Nazwa paliwa |
 | in_stock | float | Aktualny stan paliwa |
 | price | money | Aktualna cena paliwa |
@@ -135,8 +135,9 @@ Nazwa tabeli: pump
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | pump_id | int | PK, Numer ID pistoletu |
-| petrol_id | int | FK, Numer ID paliwa |
+| petrol_id | int | FK do tabeli petrol, Numer ID paliwa |
 | distributor_no | int | Numer dystrybutora |
+| status | varchar(50) | FK do tabeli status, Status pompy |
 
 <br>
 
@@ -146,12 +147,11 @@ Nazwa tabeli: transaction
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | transaction_id | int | PK, Numer ID transakcji |
-| pump_id | int | FK, Numer ID pistoletu |
+| pump_id | int | FK do tabeli pump, Numer ID pistoletu |
 | amount | float | Ilość zakupionego paliwa |
-| discount | float | Rabat na paliwo (zezwala na wartość NULL) |
-| invoice_id | int | FK, Numer ID faktury (zezwala na wartość NULL) |
-| employee_id | int | FK, Numer ID pracownika |
+| employee_id | int | FK do tabeli employee, Numer ID pracownika |
 | date | datetime | Data transakcji |
+| discount_id | int | Numer ID rabatu |
 
 <br>
 
@@ -178,10 +178,58 @@ Nazwa tabeli: invoice
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | invoice_id | int | PK, Numer ID faktury |
+| transaction_id | int | FK do tabeli transaction, Numer ID transakcji |
 | NIP | varchar(10) | Numer NIP firmy |
 | plate | varchar(20) | Numer rejestracyjny (zezwala na wartość NULL) |
 
 <br>
+
+Nazwa tabeli: discounts
+- Opis: Tabela zawierająca specyfikację rabatów.
+
+| Nazwa atrybutu | Typ  | Opis/Uwagi |
+|----------------|------|------------|
+| discount_id | int | PK, Numer ID rabatu |
+| discount_name | varchar(50) | Nazwa rabatu |
+| value | float | Wartość rabatu |
+
+<br>
+
+Nazwa tabeli: discount_history
+- Opis: Tabela zawierająca historię rabatów w czasie.
+
+| Nazwa atrybutu | Typ  | Opis/Uwagi |
+|----------------|------|------------|
+| discount_history_id | int | PK, Numer ID historii rabatu |
+| discount_id | int | FK do tabeli discounts, Numer ID rabatu |
+| value | float | Wartość rabatu |
+| start_date | datetime | Data rozpoczęcia rabatu |
+| end_date | datetime | Data zakończenia rabatu |
+
+<br>
+
+Nazwa tabeli: status
+- Opis: Tabela zawierająca status.
+
+| Nazwa atrybutu | Typ  | Opis/Uwagi |
+|----------------|------|------------|
+| status | varchar(50) | PK, status |
+
+
+<br>
+
+Nazwa tabeli: distributor
+- Opis: Tabela zawierająca informację o dystrybutorach.
+
+| Nazwa atrybutu | Typ  | Opis/Uwagi |
+|----------------|------|------------|
+| distributor_no | int | PK, Numer dystrybutora |
+| status | varchar(50) | FK do tabeli status, status |
+
+
+<br>
+
+
 
 # 4.	Implementacja
 
