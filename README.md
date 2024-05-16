@@ -82,7 +82,8 @@ Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 ## Diagram przedstawiający schemat bazy danych
 
-![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/76510a6d-180f-46ee-9d89-70d808c5dc15)
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/81ab2a9e-8cf8-4529-bd3a-b816b39a2d09)
+
 
 
 
