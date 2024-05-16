@@ -227,126 +227,243 @@ Nazwa tabeli: distributor
 (dla każdej tabeli należy wkleić kod DDL polecenia tworzącego tabelę)
 
 <br>
-Tabela: employee 
+Tabela: discount_history
 <br>
 
 ```sql
-CREATE TABLE [dbo].[employee](
-	[employee_id] [int] NOT NULL,
-	[firstname] [varchar](30) NOT NULL,
-	[lastname] [varchar](30) NOT NULL,
-	[title] [varchar](20) NOT NULL,
-	[address] [varchar](20) NOT NULL,
-	[city] [varchar](20) NOT NULL,
-	[postal_code] [varchar](10) NOT NULL,
-	[country] [varchar](20) NOT NULL,
-	[phone] [varchar](20) NOT NULL,
- CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED 
+CREATE TABLE dbo.discount_history (
+	discount_history_id INT NOT NULL,
+	discount_id INT NOT NULL,
+	value FLOAT NOT NULL,
+	start_date DATETIME NOT NULL,
+	end_date DATETIME NOT NULL,
+ CONSTRAINT PK_discount_history PRIMARY KEY CLUSTERED 
 (
-	[employee_id] ASC
+	discount_history_id ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+
+ALTER TABLE dbo.discount_history  WITH CHECK ADD CONSTRAINT FK_discount_history_discounts1 FOREIGN KEY(discount_id)
+REFERENCES dbo.discounts (discount_id)
+
+ALTER TABLE dbo.discount_history CHECK CONSTRAINT FK_discount_history_discounts1
+
+```
+
+<br>
+Tabela: discounts
+<br>
+
+```sql
+CREATE TABLE dbo.discounts (
+	discount_id INT NOT NULL,
+	discount_name VARCHAR(50) NOT NULL,
+	value FLOAT NOT NULL,
+ CONSTRAINT PK_discounts PRIMARY KEY CLUSTERED 
+(
+	discount_id ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: distributor
+<br>
+
+```sql
+CREATE TABLE dbo.distributor (
+	distributor_no INT NOT NULL,
+	status VARCHAR(50) NOT NULL,
+ CONSTRAINT PK_distributor PRIMARY KEY CLUSTERED 
+(
+	distributor_no ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+```
+<br>
+Tabela: employee
+<br>
+
+```sql
+CREATE TABLE dbo.employee (
+	employee_id INT NOT NULL,
+	firstname VARCHAR(30) NOT NULL,
+	lastname VARCHAR(30) NOT NULL,
+	title VARCHAR(20) NOT NULL,
+	address VARCHAR(20) NOT NULL,
+	city VARCHAR(20) NOT NULL,
+	postal_code VARCHAR(10) NOT NULL,
+	country VARCHAR(20) NOT NULL,
+	phone VARCHAR(20) NOT NULL,
+ CONSTRAINT PK_employee PRIMARY KEY CLUSTERED 
+(
+	employee_id ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
 ```
 <br>
 Tabela: invoice
 <br>
 
 ```sql
-CREATE TABLE [dbo].[invoice](
-	[invoice_id] [int] NOT NULL,
-	[NIP] [varchar](10) NOT NULL,
-	[plate] [varchar](20) NULL,
- CONSTRAINT [PK_car] PRIMARY KEY CLUSTERED 
-(
-	[invoice_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CREATE TABLE dbo.invoice (
+    invoice_id INT NOT NULL,
+    transaction_id INT NOT NULL,
+    NIP VARCHAR(10) NOT NULL,
+    plate VARCHAR(20) NULL,
+    CONSTRAINT PK_invoice PRIMARY KEY CLUSTERED (invoice_id ASC)
+    WITH (
+        PAD_INDEX = OFF,
+        STATISTICS_NORECOMPUTE = OFF,
+        IGNORE_DUP_KEY = OFF,
+        ALLOW_ROW_LOCKS = ON,
+        ALLOW_PAGE_LOCKS = ON
+    ) ON [PRIMARY]
+);
+
+ALTER TABLE dbo.invoice
+    WITH CHECK ADD CONSTRAINT FK_invoice_transaction
+    FOREIGN KEY (transaction_id)
+    REFERENCES dbo.transaction (transaction_id);
+
+ALTER TABLE dbo.invoice CHECK CONSTRAINT FK_invoice_transaction;
+
 ```
 <br>
 Tabela: petrol
 <br>
 
 ```sql
-CREATE TABLE [dbo].[petrol](
-	[petrol_id] [int] NOT NULL,
-	[supplier_id] [int] NOT NULL,
-	[name] [varchar](50) NOT NULL,
-	[in_stock] [float] NOT NULL,
-	[price] [money] NOT NULL,
- CONSTRAINT [PK_petrol_1] PRIMARY KEY CLUSTERED 
+CREATE TABLE dbo.petrol (
+	petrol_id INT NOT NULL,
+	supplier_id INT NOT NULL,
+	name VARCHAR(50) NOT NULL,
+	in_stock FLOAT NOT NULL,
+	price MONEY NOT NULL,
+ CONSTRAINT PK_petrol PRIMARY KEY CLUSTERED 
 (
-	[petrol_id] ASC
+	petrol_id ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
+
 ```
 <br>
 Tabela: petrol_history
 <br>
 
 ```sql
-CREATE TABLE [dbo].[petrol_history](
-	[petrol_history_id] [int] NOT NULL,
-	[petrol_id] [int] NOT NULL,
-	[price] [money] NOT NULL,
-	[date] [datetime] NOT NULL,
- CONSTRAINT [PK_petrol_history_1] PRIMARY KEY CLUSTERED 
-(
-	[petrol_history_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CREATE TABLE dbo.petrol_history (
+	petrol_history_id INT NOT NULL,
+	petrol_id INT NOT NULL,
+	price MONEY NOT NULL,
+	date DATETIME NOT NULL,
+ CONSTRAINT PK_petrol_history PRIMARY KEY CLUSTERED (petrol_history_id ASC) ON [PRIMARY]
+
+ALTER TABLE dbo.petrol_history  WITH CHECK ADD CONSTRAINT FK_petrol_history_petrol FOREIGN KEY(petrol_id)
+REFERENCES dbo.petrol (petrol_id)
+
+ALTER TABLE dbo.petrol_history CHECK CONSTRAINT FK_petrol_history_petrol
+
 ```
 <br>
 Tabela: pump
 <br>
 
 ```sql
-CREATE TABLE [dbo].[pump](
-	[pump_id] [int] NOT NULL,
-	[petrol_id] [int] NOT NULL,
-	[distributor_no] [int] NOT NULL,
- CONSTRAINT [PK_pump] PRIMARY KEY CLUSTERED 
-(
-	[pump_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CREATE TABLE dbo.pump (
+	pump_id INT NOT NULL,
+	petrol_id INT NOT NULL,
+	distributor_no INT NOT NULL,
+	status VARCHAR(50) NOT NULL,
+	CONSTRAINT PK_pump PRIMARY KEY CLUSTERED (pump_id ASC)
+) ON [PRIMARY];
+
+ALTER TABLE dbo.pump WITH CHECK ADD CONSTRAINT FK_pump_distributor FOREIGN KEY(distributor_no)
+REFERENCES dbo.distributor (distributor_no);
+
+ALTER TABLE dbo.pump CHECK CONSTRAINT FK_pump_distributor;
+
+ALTER TABLE dbo.pump WITH CHECK ADD CONSTRAINT FK_pump_petrol FOREIGN KEY(petrol_id)
+REFERENCES dbo.petrol (petrol_id);
+
+ALTER TABLE dbo.pump CHECK CONSTRAINT FK_pump_petrol;
+
 ```
+
 <br>
 Tabela: supplier
 <br>
 
 ```sql
-CREATE TABLE [dbo].[supplier](
-	[supplier_id] [int] NOT NULL,
-	[company_name] [varchar](50) NOT NULL,
-	[postal_code] [varchar](10) NOT NULL,
-	[address] [varchar](50) NOT NULL,
-	[city] [varchar](30) NOT NULL,
-	[country] [varchar](30) NOT NULL,
-	[phone] [varchar](20) NOT NULL,
- CONSTRAINT [PK_supplier] PRIMARY KEY CLUSTERED 
-(
-	[supplier_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CREATE TABLE dbo.supplier (
+	supplier_id INT NOT NULL,
+	company_name VARCHAR(50) NOT NULL,
+	postal_code VARCHAR(10) NOT NULL,
+	address VARCHAR(50) NOT NULL,
+	city VARCHAR(30) NOT NULL,
+	country VARCHAR(30) NOT NULL,
+	phone VARCHAR(20) NOT NULL,
+	CONSTRAINT PK_supplier PRIMARY KEY CLUSTERED (supplier_id ASC)
+) ON [PRIMARY];
 ```
+
+<br>
+Tabela: supply
+<br>
+
+```sql
+CREATE TABLE dbo.supply (
+	supply_id INT NOT NULL,
+	supplier_id INT NOT NULL,
+	amount FLOAT NOT NULL,
+	date DATETIME NOT NULL,
+	petrol_id INT NOT NULL,
+	price MONEY NOT NULL,
+	CONSTRAINT PK_supply PRIMARY KEY CLUSTERED (supply_id ASC)
+) ON [PRIMARY];
+
+ALTER TABLE dbo.supply WITH CHECK ADD CONSTRAINT FK_supply_petrol FOREIGN KEY(petrol_id)
+REFERENCES dbo.petrol (petrol_id);
+
+ALTER TABLE dbo.supply CHECK CONSTRAINT FK_supply_petrol;
+
+ALTER TABLE dbo.supply WITH CHECK ADD CONSTRAINT FK_supply_supplier FOREIGN KEY(supplier_id)
+REFERENCES dbo.supplier (supplier_id);
+
+ALTER TABLE dbo.supply CHECK CONSTRAINT FK_supply_supplier;
+
+```
+
 <br>
 Tabela: transaction
 <br>
 
 ```sql
-CREATE TABLE [dbo].[transaction](
-	[transaction_id] [int] NOT NULL,
-	[pump_id] [int] NOT NULL,
-	[amount] [float] NOT NULL,
-	[discount] [float] NULL,
-	[invoice_id] [int] NULL,
-	[employee_id] [int] NOT NULL,
-	[date] [datetime] NOT NULL,
- CONSTRAINT [PK_transaction] PRIMARY KEY CLUSTERED 
-(
-	[transaction_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+CREATE TABLE dbo.transaction (
+	transaction_id INT NOT NULL,
+	pump_id INT NOT NULL,
+	amount FLOAT NOT NULL,
+	employee_id INT NOT NULL,
+	[date] DATETIME NOT NULL,
+	discount_id INT NULL,
+	CONSTRAINT PK_transaction PRIMARY KEY CLUSTERED (transaction_id ASC)
+) ON [PRIMARY];
+
+ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_discounts FOREIGN KEY(discount_id)
+REFERENCES dbo.discounts (discount_id);
+
+ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_discounts;
+
+ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_Employee FOREIGN KEY(employee_id)
+REFERENCES dbo.employee (employee_id);
+
+ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_Employee;
+
+ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_pump1 FOREIGN KEY(pump_id)
+REFERENCES dbo.pump (pump_id);
+
+ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_pump1;
+
 ```
 
 ## Widoki
