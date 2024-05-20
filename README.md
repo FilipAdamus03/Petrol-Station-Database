@@ -237,16 +237,13 @@ CREATE TABLE dbo.discount_history (
 	value FLOAT NOT NULL,
 	start_date DATETIME NOT NULL,
 	end_date DATETIME NOT NULL,
- CONSTRAINT PK_discount_history PRIMARY KEY CLUSTERED 
-(
-	discount_history_id ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	CONSTRAINT PK_discount_history PRIMARY KEY CLUSTERED (discount_history_id ASC)
+) ON [PRIMARY];
 
-ALTER TABLE dbo.discount_history  WITH CHECK ADD CONSTRAINT FK_discount_history_discounts1 FOREIGN KEY(discount_id)
-REFERENCES dbo.discounts (discount_id)
+ALTER TABLE dbo.discount_history WITH CHECK ADD CONSTRAINT FK_discount_history_discounts1 FOREIGN KEY(discount_id)
+REFERENCES dbo.discounts (discount_id);
 
-ALTER TABLE dbo.discount_history CHECK CONSTRAINT FK_discount_history_discounts1
+ALTER TABLE dbo.discount_history CHECK CONSTRAINT FK_discount_history_discounts1;
 
 ```
 
@@ -259,11 +256,9 @@ CREATE TABLE dbo.discounts (
 	discount_id INT NOT NULL,
 	discount_name VARCHAR(50) NOT NULL,
 	value FLOAT NOT NULL,
- CONSTRAINT PK_discounts PRIMARY KEY CLUSTERED 
-(
-	discount_id ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	CONSTRAINT PK_discounts PRIMARY KEY CLUSTERED (discount_id ASC)
+) ON [PRIMARY];
+
 ```
 <br>
 Tabela: distributor
@@ -273,11 +268,9 @@ Tabela: distributor
 CREATE TABLE dbo.distributor (
 	distributor_no INT NOT NULL,
 	status VARCHAR(50) NOT NULL,
- CONSTRAINT PK_distributor PRIMARY KEY CLUSTERED 
-(
-	distributor_no ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	CONSTRAINT PK_distributor PRIMARY KEY CLUSTERED (distributor_no ASC)
+) ON [PRIMARY];
+
 ```
 <br>
 Tabela: employee
@@ -294,11 +287,8 @@ CREATE TABLE dbo.employee (
 	postal_code VARCHAR(10) NOT NULL,
 	country VARCHAR(20) NOT NULL,
 	phone VARCHAR(20) NOT NULL,
- CONSTRAINT PK_employee PRIMARY KEY CLUSTERED 
-(
-	employee_id ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	CONSTRAINT PK_employee PRIMARY KEY CLUSTERED (employee_id ASC)
+) ON [PRIMARY];
 
 ```
 <br>
@@ -307,26 +297,18 @@ Tabela: invoice
 
 ```sql
 CREATE TABLE dbo.invoice (
-    invoice_id INT NOT NULL,
-    transaction_id INT NOT NULL,
-    NIP VARCHAR(10) NOT NULL,
-    plate VARCHAR(20) NULL,
-    CONSTRAINT PK_invoice PRIMARY KEY CLUSTERED (invoice_id ASC)
-    WITH (
-        PAD_INDEX = OFF,
-        STATISTICS_NORECOMPUTE = OFF,
-        IGNORE_DUP_KEY = OFF,
-        ALLOW_ROW_LOCKS = ON,
-        ALLOW_PAGE_LOCKS = ON
-    ) ON [PRIMARY]
-);
+	invoice_id INT NOT NULL,
+	transaction_id INT NOT NULL,
+	NIP VARCHAR(10) NOT NULL,
+	plate VARCHAR(20) NULL,
+	CONSTRAINT PK_invoice PRIMARY KEY CLUSTERED (invoice_id ASC)
+) ON [PRIMARY];
 
-ALTER TABLE dbo.invoice
-    WITH CHECK ADD CONSTRAINT FK_invoice_transaction
-    FOREIGN KEY (transaction_id)
-    REFERENCES dbo.transaction (transaction_id);
+ALTER TABLE dbo.invoice WITH CHECK ADD CONSTRAINT FK_invoice_transaction
+FOREIGN KEY (transaction_id) REFERENCES dbo.transaction (transaction_id);
 
 ALTER TABLE dbo.invoice CHECK CONSTRAINT FK_invoice_transaction;
+
 
 ```
 <br>
@@ -340,11 +322,9 @@ CREATE TABLE dbo.petrol (
 	name VARCHAR(50) NOT NULL,
 	in_stock FLOAT NOT NULL,
 	price MONEY NOT NULL,
- CONSTRAINT PK_petrol PRIMARY KEY CLUSTERED 
-(
-	petrol_id ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	CONSTRAINT PK_petrol PRIMARY KEY CLUSTERED (petrol_id ASC)
+) ON [PRIMARY];
+
 
 ```
 <br>
@@ -357,7 +337,8 @@ CREATE TABLE dbo.petrol_history (
 	petrol_id INT NOT NULL,
 	price MONEY NOT NULL,
 	date DATETIME NOT NULL,
- CONSTRAINT PK_petrol_history PRIMARY KEY CLUSTERED (petrol_history_id ASC) ON [PRIMARY]
+ CONSTRAINT PK_petrol_history PRIMARY KEY CLUSTERED (petrol_history_id ASC)
+) ON [PRIMARY];
 
 ALTER TABLE dbo.petrol_history  WITH CHECK ADD CONSTRAINT FK_petrol_history_petrol FOREIGN KEY(petrol_id)
 REFERENCES dbo.petrol (petrol_id)
