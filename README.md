@@ -82,7 +82,7 @@ Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 ## Diagram przedstawiający schemat bazy danych
 
-![image](https://github.com/FilipAdamus03/Petrol-Station-Database/assets/132128402/e81de304-7de0-489e-9871-6da5b6ef1e0e)
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/070664b4-d67d-4bc1-a389-04d8136abe9a)
 
 ## Opis poszczególnych tabel
 
@@ -95,7 +95,7 @@ Nazwa tabeli: petrol_history
 |----------------|------|------------|
 | petrol_history_id | int | PK, Numer ID historii paliwa |
 | petrol_id | int |FK do tabeli petrol, Numer ID paliwa |
-| price | money | Historyczna cena paliwa |
+| price | money | Historyczna cena paliwa za litr |
 | date | datetime | Data |
 
 <br>
@@ -106,10 +106,9 @@ Nazwa tabeli: petrol
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | petrol_id | int | PK, Numer ID paliwa |
-| supplier_id | int | FK do tabeli supplier, Numer ID dostawcy paliwa |
 | name | varchar(50) | Nazwa paliwa |
-| in_stock | float | Aktualny stan paliwa |
-| price | money | Aktualna cena paliwa |
+| in_stock | float | Aktualny stan paliwa w litrach |
+| price | money | Aktualna cena paliwa za litr |
 
 <br>
 
@@ -118,13 +117,27 @@ Nazwa tabeli: supplier
 
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
-| supplier_id | int | PK, Numer ID dostawcy
+| supplier_id | int | PK, Numer ID dostawcy |
 | company_name | varchar(50) | Nazwa dostawcy |
 | postal_code | varchar(10) | Kod pocztowy |
 | address | varchar(50) | Adres siedziby firmy |
 | city | varchar(30) | Miasto dostawcy |
 | country | varchar(30) | Państwo dostawcy |
 | phone | varchar(20) | Numer telefonu dostawcy |
+
+<br>
+
+Nazwa tabeli: supply
+- Opis: Tabela zawierająca dane na temat dostaw.
+
+| Nazwa atrybutu | Typ  | Opis/Uwagi |
+|----------------|------|------------|
+| supply_id | int | PK, Numer ID Dostawy |
+| supplier_id | int | FK do tabeli supplier, Numer ID dostawcy |
+| amount | float | Ilość dostarczonego paliwa w litrach |
+| date | datetime | Data dostawy |
+| petrol_id | int | FK do tabeli petrol, Numer ID paliwa |
+| price | money | Cena paliwa za litr |
 
 <br>
 
@@ -136,7 +149,7 @@ Nazwa tabeli: pump
 | pump_id | int | PK, Numer ID pistoletu |
 | petrol_id | int | FK do tabeli petrol, Numer ID paliwa |
 | distributor_no | int | Numer dystrybutora |
-| status | varchar(50) | FK do tabeli status, Status pompy |
+| status | varchar(50) | Status pompy |
 
 <br>
 
@@ -150,7 +163,7 @@ Nazwa tabeli: transaction
 | amount | float | Ilość zakupionego paliwa |
 | employee_id | int | FK do tabeli employee, Numer ID pracownika |
 | date | datetime | Data transakcji |
-| discount_id | int | Numer ID rabatu |
+| discount_id | int | Numer ID rabatu (zezwala na wartość NULL) |
 
 <br>
 
@@ -183,7 +196,7 @@ Nazwa tabeli: invoice
 
 <br>
 
-Nazwa tabeli: discounts
+Nazwa tabeli: discount
 - Opis: Tabela zawierająca specyfikację rabatów.
 
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
@@ -191,19 +204,10 @@ Nazwa tabeli: discounts
 | discount_id | int | PK, Numer ID rabatu |
 | discount_name | varchar(50) | Nazwa rabatu |
 | value | float | Wartość rabatu |
+| start_date | datetime | Data rozpoczęcia zniżki |
+| end_date | datetime | Data zakończenia zniżki (zezwala na wartość NULL) |
 
-<br>
 
-Nazwa tabeli: discount_history
-- Opis: Tabela zawierająca historię rabatów w czasie.
-
-| Nazwa atrybutu | Typ  | Opis/Uwagi |
-|----------------|------|------------|
-| discount_history_id | int | PK, Numer ID historii rabatu |
-| discount_id | int | FK do tabeli discounts, Numer ID rabatu |
-| value | float | Wartość rabatu |
-| start_date | datetime | Data rozpoczęcia rabatu |
-| end_date | datetime | Data zakończenia rabatu |
 
 <br>
 
@@ -213,7 +217,7 @@ Nazwa tabeli: distributor
 | Nazwa atrybutu | Typ  | Opis/Uwagi |
 |----------------|------|------------|
 | distributor_no | int | PK, Numer dystrybutora |
-| status | varchar(50) | FK do tabeli status, status |
+| status | varchar(50) | Status dystrybutora |
 
 
 <br>
@@ -227,36 +231,17 @@ Nazwa tabeli: distributor
 (dla każdej tabeli należy wkleić kod DDL polecenia tworzącego tabelę)
 
 <br>
-Tabela: discount_history
+Tabela: discount
 <br>
 
 ```sql
-CREATE TABLE dbo.discount_history (
-	discount_history_id INT NOT NULL,
-	discount_id INT NOT NULL,
-	value FLOAT NOT NULL,
-	start_date DATETIME NOT NULL,
-	end_date DATETIME NOT NULL,
-	CONSTRAINT PK_discount_history PRIMARY KEY CLUSTERED (discount_history_id ASC)
-) ON [PRIMARY];
-
-ALTER TABLE dbo.discount_history WITH CHECK ADD CONSTRAINT FK_discount_history_discounts1 FOREIGN KEY(discount_id)
-REFERENCES dbo.discounts (discount_id);
-
-ALTER TABLE dbo.discount_history CHECK CONSTRAINT FK_discount_history_discounts1;
-
-```
-
-<br>
-Tabela: discounts
-<br>
-
-```sql
-CREATE TABLE dbo.discounts (
+CREATE TABLE dbo.discount (
 	discount_id INT NOT NULL,
 	discount_name VARCHAR(50) NOT NULL,
 	value FLOAT NOT NULL,
-	CONSTRAINT PK_discounts PRIMARY KEY CLUSTERED (discount_id ASC)
+	start_date datetime NOT NULL,
+	end_date datetime NULL,
+	CONSTRAINT PK_discount PRIMARY KEY CLUSTERED (discount_id ASC)
 ) ON [PRIMARY];
 
 ```
@@ -304,8 +289,8 @@ CREATE TABLE dbo.invoice (
 	CONSTRAINT PK_invoice PRIMARY KEY CLUSTERED (invoice_id ASC)
 ) ON [PRIMARY];
 
-ALTER TABLE dbo.invoice WITH CHECK ADD CONSTRAINT FK_invoice_transaction
-FOREIGN KEY (transaction_id) REFERENCES dbo.transaction (transaction_id);
+ALTER TABLE dbo.invoice WITH CHECK ADD CONSTRAINT FK_invoice_transaction FOREIGN KEY (transaction_id) 
+REFERENCES dbo.transaction (transaction_id);
 
 ALTER TABLE dbo.invoice CHECK CONSTRAINT FK_invoice_transaction;
 
@@ -318,7 +303,6 @@ Tabela: petrol
 ```sql
 CREATE TABLE dbo.petrol (
 	petrol_id INT NOT NULL,
-	supplier_id INT NOT NULL,
 	name VARCHAR(50) NOT NULL,
 	in_stock FLOAT NOT NULL,
 	price MONEY NOT NULL,
@@ -336,7 +320,7 @@ CREATE TABLE dbo.petrol_history (
 	petrol_history_id INT NOT NULL,
 	petrol_id INT NOT NULL,
 	price MONEY NOT NULL,
-	date DATETIME NOT NULL,
+	[date] DATETIME NOT NULL,
  CONSTRAINT PK_petrol_history PRIMARY KEY CLUSTERED (petrol_history_id ASC)
 ) ON [PRIMARY];
 
@@ -397,7 +381,7 @@ CREATE TABLE dbo.supply (
 	supply_id INT NOT NULL,
 	supplier_id INT NOT NULL,
 	amount FLOAT NOT NULL,
-	date DATETIME NOT NULL,
+	[date] DATETIME NOT NULL,
 	petrol_id INT NOT NULL,
 	price MONEY NOT NULL,
 	CONSTRAINT PK_supply PRIMARY KEY CLUSTERED (supply_id ASC)
@@ -430,10 +414,10 @@ CREATE TABLE dbo.transaction (
 	CONSTRAINT PK_transaction PRIMARY KEY CLUSTERED (transaction_id ASC)
 ) ON [PRIMARY];
 
-ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_discounts FOREIGN KEY(discount_id)
-REFERENCES dbo.discounts (discount_id);
+ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_discount FOREIGN KEY(discount_id)
+REFERENCES dbo.discount (discount_id);
 
-ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_discounts;
+ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_discount;
 
 ALTER TABLE dbo.transaction WITH CHECK ADD CONSTRAINT FK_transaction_Employee FOREIGN KEY(employee_id)
 REFERENCES dbo.employee (employee_id);
