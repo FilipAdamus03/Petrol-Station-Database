@@ -436,6 +436,34 @@ ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_pump1;
 
 (dla każdego widoku należy wkleić kod polecenia definiującego widok wraz z komentarzem)
 
+**1. Wartość całkowita każdej transakcji**
+
+Widok "vw_bill_value" służy do wyliczenia i zaprezentowania całkowitej wartości każdej transakcji klienta.
+Uwzględnione zostały również takie wytyczne jak numer transakcji czy ilość zatankowanego paliwa. W cenę
+uwzględniona jest zniżka w miejscach gdzie ona widnieje.
+
+```sql
+create view vw_bill_value AS
+SELECT
+  t.transaction_id,
+  t.pump_id,
+  t.employee_id,
+  p.name,
+  t.amount,
+  p.price,
+  d.value as discount,
+  ROUND(t.amount * p.price *
+  CASE
+  WHEN d.value IS NULL THEN 1
+  ELSE (1-d.value)
+  END
+  ,2) as bill_value
+FROM [transaction] t
+LEFT JOIN discount d ON d.discount_id = t.discount_id
+JOIN pump ON pump.pump_id = t.pump_id
+JOIN petrol p ON p.petrol_id = pump.petrol_id;
+```
+
 ## Procedury/funkcje
 
 (dla każdej procedury/funkcji należy wkleić kod polecenia definiującego procedurę wraz z komentarzem)
