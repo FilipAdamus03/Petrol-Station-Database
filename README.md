@@ -82,7 +82,8 @@ Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 ## Diagram przedstawiający schemat bazy danych
 
-![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/070664b4-d67d-4bc1-a389-04d8136abe9a)
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/060c6420-6357-458f-9974-db03b4fbc43b)
+
 
 ## Opis poszczególnych tabel
 
@@ -434,6 +435,34 @@ ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_pump1;
 ## Widoki
 
 (dla każdego widoku należy wkleić kod polecenia definiującego widok wraz z komentarzem)
+
+**1. Wartość całkowita każdej transakcji**
+
+Widok "vw_bill_value" służy do wyliczenia i zaprezentowania całkowitej wartości każdej transakcji klienta.
+Uwzględnione zostały również takie wytyczne jak numer transakcji czy ilość zatankowanego paliwa. W cenę
+uwzględniona jest zniżka w miejscach gdzie ona widnieje.
+
+```sql
+create view vw_bill_value AS
+SELECT
+  t.transaction_id,
+  t.pump_id,
+  t.employee_id,
+  p.name,
+  t.amount,
+  p.price,
+  d.value as discount,
+  ROUND(t.amount * p.price *
+  CASE
+  WHEN d.value IS NULL THEN 1
+  ELSE (1-d.value)
+  END
+  ,2) as bill_value
+FROM [transaction] t
+LEFT JOIN discount d ON d.discount_id = t.discount_id
+JOIN pump ON pump.pump_id = t.pump_id
+JOIN petrol p ON p.petrol_id = pump.petrol_id;
+```
 
 ## Procedury/funkcje
 
