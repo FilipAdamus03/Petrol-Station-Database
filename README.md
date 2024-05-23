@@ -465,6 +465,7 @@ JOIN petrol p ON p.petrol_id = pump.petrol_id;
 ```
 
 **2. Całkowity koszt dostawy**
+
 Widok "vw_total_supply_cost" służy do wyliczenia i zaprezentowania całkowitego kosztu każdej dostawy paliwa.
 Uwzględnia on również takie informacje jak nazwa dostawcy, adres, miasto, kraj oraz telefon kontaktowy.
 Zawiera także szczegóły dotyczące dostarczanego paliwa, takie jak jego nazwa, cena jednostkowa oraz całkowita ilość dostarczonego paliwa. (Filip Adamus)
@@ -491,6 +492,7 @@ JOIN
     supplier supp ON s.supplier_id = supp.supplier_id;
 ```
 **3. Status dystrybutorów i pistoletów**
+
 Widok "vw_distributor_pump_status" służy do prezentowania statusu dystrybutorów oraz przypisanych do nich pistoletów.
 Uwzględnia on również informacje o rodzaju paliwa oraz cenie.
 Widok ten może być używany do monitorowania stanu sprzętu. (Filip Adamus)
