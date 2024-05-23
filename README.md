@@ -440,7 +440,7 @@ ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_pump1;
 
 Widok "vw_bill_value" służy do wyliczenia i zaprezentowania całkowitej wartości każdej transakcji klienta.
 Uwzględnione zostały również takie wytyczne jak numer transakcji czy ilość zatankowanego paliwa. W cenę
-uwzględniona jest zniżka w miejscach gdzie ona widnieje.
+uwzględniona jest zniżka w miejscach gdzie ona widnieje. (Filip Przepiórka)
 
 ```sql
 create view vw_bill_value AS
@@ -462,6 +462,53 @@ FROM [transaction] t
 LEFT JOIN discount d ON d.discount_id = t.discount_id
 JOIN pump ON pump.pump_id = t.pump_id
 JOIN petrol p ON p.petrol_id = pump.petrol_id;
+```
+
+**2. Całkowity koszt dostawy**
+Widok "vw_total_supply_cost" służy do wyliczenia i zaprezentowania całkowitego kosztu każdej dostawy paliwa.
+Uwzględnia on również takie informacje jak nazwa dostawcy, adres, miasto, kraj oraz telefon kontaktowy.
+Zawiera także szczegóły dotyczące dostarczanego paliwa, takie jak jego nazwa, cena jednostkowa oraz całkowita ilość dostarczonego paliwa. (Filip Adamus)
+
+```sql
+CREATE VIEW vw_total_supply_cost AS
+SELECT 
+    s.supply_id,
+    s.amount,
+    s.date,
+    p.name AS petrol_name,
+    p.price AS unit_price,
+    (s.amount * p.price) AS total_cost,
+    supp.company_name,
+    supp.address AS supplier_address,
+    supp.city AS supplier_city,
+    supp.country AS supplier_country,
+    supp.phone AS supplier_phone
+FROM 
+    supply s
+JOIN 
+    petrol p ON s.petrol_id = p.petrol_id
+JOIN 
+    supplier supp ON s.supplier_id = supp.supplier_id;
+```
+**3. Status dystrybutorów i pistoletów**
+Widok "vw_distributor_pump_status" służy do prezentowania statusu dystrybutorów oraz przypisanych do nich pistoletów.
+Uwzględnia on również informacje o rodzaju paliwa oraz cenie.
+Widok ten może być używany do monitorowania stanu sprzętu. (Filip Adamus)
+
+```sql
+CREATE VIEW vw_distributor_pump_status AS
+SELECT 
+    d.distributor_no,
+    d.status AS distributor_status,
+    p.pump_id,
+    p.status AS pump_status,
+    pet.name AS petrol_name
+FROM 
+    distributor d
+JOIN 
+    pump p ON d.distributor_no = p.distributor_no
+JOIN 
+    petrol pet ON p.petrol_id = pet.petrol_id;
 ```
 
 ## Procedury/funkcje
