@@ -488,6 +488,7 @@ FROM supply s
 JOIN petrol p ON s.petrol_id = p.petrol_id
 JOIN supplier supp ON s.supplier_id = supp.supplier_id;
 ```
+
 **3. Status dystrybutorów i pistoletów**
 
 Widok "vw_distributor_pump_status" służy do prezentowania statusu dystrybutorów oraz przypisanych do nich pistoletów.
@@ -505,6 +506,33 @@ SELECT
 FROM distributor d
 JOIN pump p ON d.distributor_no = p.distributor_no
 JOIN petrol pet ON p.petrol_id = pet.petrol_id;
+```
+
+**3. Szczegóły wszystkich faktur**
+
+Widok "vw_invoice_details" służy do prezentacji szczegółów każdej faktury.
+Uwzględnia takie informacje jak numer faktury, numer transakcji, NIP, numer rejestracyjny pojazdu, data transakcji, nazwa paliwa,
+końcowy koszt transakcji po uwzględnieniu zniżki oraz identyfikator pracownika obsługującego transakcję. (Filip Adamus)
+
+```sql
+CREATE VIEW vw_invoice_details AS
+SELECT 
+    i.invoice_id,
+    i.transaction_id,
+    i.NIP,
+    i.plate,
+    t.date AS transaction_date,
+    p.name AS petrol_name,
+    ROUND(t.amount * p.price * 
+          CASE 
+              WHEN d.value IS NULL THEN 1 
+              ELSE (1 - d.value) 
+          END, 2) AS final_cost, t.employee_id
+FROM invoice i
+JOIN [transaction] t ON i.transaction_id = t.transaction_id
+JOIN pump pmp ON t.pump_id = pmp.pump_id
+JOIN petrol p ON pmp.petrol_id = p.petrol_id
+LEFT JOIN discount d ON t.discount_id = d.discount_id;
 ```
 
 ## Procedury/funkcje
