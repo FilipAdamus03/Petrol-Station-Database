@@ -484,12 +484,9 @@ SELECT
     supp.city AS supplier_city,
     supp.country AS supplier_country,
     supp.phone AS supplier_phone
-FROM 
-    supply s
-JOIN 
-    petrol p ON s.petrol_id = p.petrol_id
-JOIN 
-    supplier supp ON s.supplier_id = supp.supplier_id;
+FROM supply s
+JOIN petrol p ON s.petrol_id = p.petrol_id
+JOIN supplier supp ON s.supplier_id = supp.supplier_id;
 ```
 **3. Status dystrybutorów i pistoletów**
 
@@ -505,12 +502,9 @@ SELECT
     p.pump_id,
     p.status AS pump_status,
     pet.name AS petrol_name
-FROM 
-    distributor d
-JOIN 
-    pump p ON d.distributor_no = p.distributor_no
-JOIN 
-    petrol pet ON p.petrol_id = pet.petrol_id;
+FROM distributor d
+JOIN pump p ON d.distributor_no = p.distributor_no
+JOIN petrol pet ON p.petrol_id = pet.petrol_id;
 ```
 
 ## Procedury/funkcje
