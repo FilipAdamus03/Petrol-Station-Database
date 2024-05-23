@@ -508,7 +508,7 @@ JOIN pump p ON d.distributor_no = p.distributor_no
 JOIN petrol pet ON p.petrol_id = pet.petrol_id;
 ```
 
-**3. Szczegóły wszystkich faktur**
+**4. Szczegóły wszystkich faktur**
 
 Widok "vw_invoice_details" służy do prezentacji szczegółów każdej faktury.
 Uwzględnia takie informacje jak numer faktury, numer transakcji, NIP, numer rejestracyjny pojazdu, data transakcji, nazwa paliwa,
