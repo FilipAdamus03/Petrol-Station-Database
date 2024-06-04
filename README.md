@@ -534,6 +534,18 @@ JOIN pump pmp ON t.pump_id = pmp.pump_id
 JOIN petrol p ON pmp.petrol_id = p.petrol_id
 LEFT JOIN discount d ON t.discount_id = d.discount_id;
 ```
+**5. Całkowita sprzedaż danego paliwa przez lata**
+
+```sql
+create view vw_total_year_amount as
+select YEAR(date) AS year, SUM(t.amount) as total_amount,name,ROUND(SUM((t.amount*p.price*ISNULL(d.value,1))),2) as total_price from [transaction] as t
+left join discount d on d.discount_id = t.discount_id
+join pump on pump.pump_id = t.pump_id
+join petrol as p on p.petrol_id = pump.petrol_id
+group by name, YEAR(date)
+
+```
+
 
 ## Procedury/funkcje
 
