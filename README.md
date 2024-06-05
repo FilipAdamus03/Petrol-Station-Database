@@ -1036,7 +1036,7 @@ BEGIN
     RETURN @total_cost;
 END;
 ```
-**13. Funkcja całkowitą sprzedaż paliwa przez dystrybutor**
+**13. Funkcja całkowita sprzedaż paliwa przez dystrybutor**
 
 Ta funkcja oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
 Suma wartości sprzedaży jest następnie zwracana jako wynik. (FA)
@@ -1061,7 +1061,7 @@ END;
 **14. Funkcja do sprawdzania dostępności pracownika**
 
 Ta funkcja sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
-Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny).(FA)
+Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny). (FA)
 
 ```sql
 CREATE FUNCTION fn_check_employee_availability (
