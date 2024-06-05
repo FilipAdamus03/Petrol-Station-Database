@@ -19,10 +19,10 @@ System do obsługi stacji benzynowej
 
 **Autorzy:** 
 
+Filip Przepiórka.
 Rafał Dubiel, 
 Daniel Antolak, 
-Filip Adamus, 
-Filip Przepiórka.
+Filip Adamus.
 
 --- 
 
