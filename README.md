@@ -859,7 +859,78 @@ BEGIN
 END;
 ```
 
-**7. Funkcja sprawdzania sprzedaży paliwa w danym okresie**
+**7. Procedura dodanie zniżki z walidacją**
+
+Ta procedura dodaje nową zniżkę do tabeli discount po sprawdzeniu poprawności danych wejściowych. Procedura waliduje, czy wartość zniżki jest między 0 a 1 oraz czy data rozpoczęcia zniżki jest wcześniejsza niż data zakończenia.
+Jeśli walidacja przejdzie pomyślnie, nowa zniżka zostaje dodana do tabeli. (FA)
+
+```sql
+CREATE PROCEDURE sp_add_new_discount_with_validation (
+@discount_name VARCHAR(50),
+@value FLOAT,
+@start_date DATETIME,
+@end_date DATETIME
+)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF @value <= 0 OR @value > 1
+        BEGIN
+            THROW 50001, 'Discount value must be between 0 and 1', 1;
+        END
+
+        IF @start_date >= @end_date
+        BEGIN
+            THROW 50002, 'Start date must be earlier than end date', 1;
+        END
+
+        INSERT INTO discount (discount_name, value, start_date, end_date)
+        VALUES (@discount_name, @value, @start_date, @end_date);
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+```
+
+**8. Procedura generująca raport sprzedaży dla danego okresu**
+
+Ta procedura generuje raport sprzedaży dla danego okresu, grupując dane według pracowników i rodzajów paliwa. Wykorzystuje tabele transaction, pump, petrol i employee, aby uzyskać informacje o sprzedaży.
+Raport zawiera imię i nazwisko pracownika, nazwę paliwa, całkowitą ilość sprzedanego paliwa oraz całkowitą wartość sprzedaży. (FA)
+
+```sql
+CREATE PROCEDURE sp_generate_sales_report (
+@start_date DATETIME,
+@end_date DATETIME
+)
+AS
+BEGIN
+    BEGIN TRY
+        SELECT 
+            e.firstname + ' ' + e.lastname AS employee_name,
+            p.name AS petrol_name,
+            SUM(t.amount) AS total_amount,
+            SUM(t.amount * p.price) AS total_sales
+        FROM [transaction] t
+        JOIN pump pu ON t.pump_id = pu.pump_id
+        JOIN petrol p ON pu.petrol_id = p.petrol_id
+        JOIN employee e ON t.employee_id = e.employee_id
+        WHERE t.date BETWEEN @start_date AND @end_date
+        GROUP BY e.firstname, e.lastname, p.name
+        ORDER BY total_sales DESC;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+```
+
+**9. Funkcja sprawdzania sprzedaży paliwa w danym okresie**
 
 Funkcja "fn_fuel_sales_by_date" służy do uzyskania zestawienia sprzedaży paliwa w określonym przedziale czasowym.
 
@@ -882,7 +953,7 @@ RETURN
 GO
 ```
 
-**8. Funkcja sprawdzania statusu dystrybutora**
+**10. Funkcja sprawdzania statusu dystrybutora**
 
 Funkcja "fn_check_dist_status" służy do sprawdzania statusu dystrybutora, do którego jest przypisana konkretna pompa. (FP)
 
@@ -903,7 +974,7 @@ END;
 GO
 ```
 
-**9. Funkcja do sprawdzania zmiany cen paliwa**
+**11. Funkcja do sprawdzania zmiany cen paliwa**
 
 Funkcja "fn_price_change" oblicza procentową zmianę ceny danego typu paliwa w określonym przedziale czasowym.
 
@@ -947,7 +1018,7 @@ END;
 GO
 ```
 
-**10. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
+**12. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
 
 Funkcja "fn_total_supply_cost_per_supplier" oblicza łączną wartość dostaw dla określonego dostawcy. (FP)
 
@@ -965,7 +1036,61 @@ BEGIN
     RETURN @total_cost;
 END;
 ```
+**13. Funkcja całkowitą sprzedaż paliwa przez dystrybutor**
 
+Ta funkcja oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
+Suma wartości sprzedaży jest następnie zwracana jako wynik. (FA)
+
+```sql
+CREATE FUNCTION fn_total_fuel_sales_by_distributor (
+    @distributor_no INT
+) RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @total_sales FLOAT;
+
+    SELECT @total_sales = SUM(t.amount * p.price)
+    FROM [transaction] t
+    JOIN pump pu ON t.pump_id = pu.pump_id
+    JOIN petrol p ON pu.petrol_id = p.petrol_id
+    WHERE pu.distributor_no = @distributor_no;
+
+    RETURN @total_sales;
+END;
+```
+**14. Funkcja do sprawdzania dostępności pracownika**
+
+Ta funkcja sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
+Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny).(FA)
+
+```sql
+CREATE FUNCTION fn_check_employee_availability (
+@employee_id INT,
+@start_date DATETIME,
+@end_date DATETIME
+) RETURNS BIT
+AS
+BEGIN
+    DECLARE @availability BIT;
+
+    IF EXISTS (
+        SELECT 1
+        FROM schedule
+        WHERE employee_id = @employee_id
+          AND (@start_date BETWEEN start_date AND end_date
+               OR @end_date BETWEEN start_date AND end_date)
+    )
+    BEGIN
+        SET @availability = 0;
+    END
+    ELSE
+    BEGIN
+        SET @availability = 1;
+    END
+
+    RETURN @availability;
+END;
+```
 ## Triggery
 
 (dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
