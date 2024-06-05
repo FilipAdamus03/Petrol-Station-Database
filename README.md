@@ -440,7 +440,7 @@ ALTER TABLE dbo.transaction CHECK CONSTRAINT FK_transaction_pump1;
 
 Widok "vw_bill_value" służy do wyliczenia i zaprezentowania całkowitej wartości każdej transakcji klienta.
 Uwzględnione zostały również takie wytyczne jak numer transakcji czy ilość zatankowanego paliwa. W cenę
-uwzględniona jest zniżka w miejscach gdzie ona widnieje. (Filip Przepiórka)
+uwzględniona jest zniżka w miejscach gdzie ona widnieje. (FP)
 
 ```sql
 create view vw_bill_value AS
@@ -468,7 +468,7 @@ JOIN petrol p ON p.petrol_id = pump.petrol_id;
 
 Widok "vw_total_supply_cost" służy do wyliczenia i zaprezentowania całkowitego kosztu każdej dostawy paliwa.
 Uwzględnia on również takie informacje jak nazwa dostawcy, adres, miasto, kraj oraz telefon kontaktowy.
-Zawiera także szczegóły dotyczące dostarczanego paliwa, takie jak jego nazwa, cena jednostkowa oraz całkowita ilość dostarczonego paliwa. (Filip Adamus)
+Zawiera także szczegóły dotyczące dostarczanego paliwa, takie jak jego nazwa, cena jednostkowa oraz całkowita ilość dostarczonego paliwa. (FA)
 
 ```sql
 CREATE VIEW vw_total_supply_cost AS
@@ -493,7 +493,7 @@ JOIN supplier supp ON s.supplier_id = supp.supplier_id;
 
 Widok "vw_distributor_pump_status" służy do prezentowania statusu dystrybutorów oraz przypisanych do nich pistoletów.
 Uwzględnia on również informacje o rodzaju paliwa oraz cenie.
-Widok ten może być używany do monitorowania stanu sprzętu. (Filip Adamus)
+Widok ten może być używany do monitorowania stanu sprzętu. (FA)
 
 ```sql
 CREATE VIEW vw_distributor_pump_status AS
@@ -512,7 +512,7 @@ JOIN petrol pet ON p.petrol_id = pet.petrol_id;
 
 Widok "vw_invoice_details" służy do prezentacji szczegółów każdej faktury.
 Uwzględnia takie informacje jak numer faktury, numer transakcji, NIP, numer rejestracyjny pojazdu, data transakcji, nazwa paliwa,
-końcowy koszt transakcji po uwzględnieniu zniżki oraz identyfikator pracownika obsługującego transakcję. (Filip Adamus)
+końcowy koszt transakcji po uwzględnieniu zniżki oraz identyfikator pracownika obsługującego transakcję. (FA)
 
 ```sql
 CREATE VIEW vw_invoice_details AS
@@ -536,6 +536,10 @@ LEFT JOIN discount d ON t.discount_id = d.discount_id;
 ```
 **5. Całkowita sprzedaż danego paliwa przez lata**
 
+Widok vw_total_year_amount został stworzony w celu uzyskania rocznego podsumowania sprzedaży paliwa.
+Widok zawiera dane dotyczące sumy sprzedanego paliwa oraz łącznej wartości sprzedaży dla każdego rodzaju paliwa,
+z uwzględnieniem ewentualnych zniżek, w podziale na lata.		(FP)
+
 ```sql
 create view vw_total_year_amount as
 select YEAR(date) AS year, SUM(t.amount) as total_amount,name,ROUND(SUM((t.amount*p.price*ISNULL(d.value,1))),2) as total_price from [transaction] as t
@@ -545,6 +549,58 @@ join petrol as p on p.petrol_id = pump.petrol_id
 group by name, YEAR(date)
 
 ```
+
+**6. Aktywne zniżki**
+
+Widok "vw_active_discounts" został stworzony w celu uzyskania listy aktywnych zniżek, które są aktualnie ważne, tzn. takich,
+których data zakończenia jest pusta (nieokreślona) lub przypada na późniejszy termin niż bieżąca data. (FP)
+
+```sql
+CREATE VIEW vw_active_discounts AS
+SELECT discount_id, discount_name, value, start_date, end_date
+FROM discount
+WHERE end_date IS NULL OR end_date > GETDATE();
+```
+
+**7. Suma obsłużonych transakcji przez pracownika**
+
+Widok "vw_employee_transaction_count" oblicza liczbę transakcji obsłużonych przez każdego pracownika. (FP)
+
+```sql
+CREATE VIEW vw_employee_transaction_count AS
+SELECT employee_id, COUNT(transaction_id) AS transaction_count
+FROM [transaction]
+GROUP BY employee_id;
+```
+
+**8. Średnia cena paliwa w miesiącu**
+
+Widok "vw_avg_monthly_petrol_price" powstał do obliczania średniej ceny paliwa dla każdego miesiąca w danym roku,
+z podziałem na poszczególne rodzaje paliwa.	(FP)
+
+```sql
+create view vw_avg_monthly_petrol_price as
+select year(date) as year, month(date) as month, p.petrol_id, name, avg(ph.price) as average
+from dbo.petrol_history as ph
+join dbo.petrol p on ph.petrol_id = p.petrol_id
+group by year(date), month(date), name, p.petrol_id
+```
+
+**9. Całkowita ilość danego paliwa jaka została zatankowana z danego dystrybutora.**
+
+Widok "vw_distributor_fuel_usage" jest zaprojektowany do monitorowania zużycia paliwa przez dystrybutory na stacji paliw.
+Jego głównym celem jest dostarczenie informacji o całkowitej ilości paliwa sprzedanej przez każdy dystrybutor dla każdego rodzaju paliwa. (FP)
+
+```sql
+create view vw_distributor_fuel_usage as
+select d.distributor_no, p.petrol_id, pet.name, SUM(t.amount) as total_amount
+from dbo.pump p
+join dbo.[transaction] t ON p.pump_id = t.pump_id
+join dbo.distributor d ON p.distributor_no = d.distributor_no
+join dbo.petrol pet on pet.petrol_id = p.petrol_id
+group by p.petrol_id, d.distributor_no, pet.name
+```
+
 
 
 ## Procedury/funkcje
