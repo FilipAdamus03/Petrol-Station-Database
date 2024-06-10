@@ -8,3 +8,36 @@ Tworzenie grafu Bazy Danych
 ### 4. Więcej konkretów, mniej lania wody.
 **21.05**
 Aktualnienia opisów, kodów i samej bazy danych
+
+
+**DATA 06.06.2024 **
+
+Widok bill_value ---
+
+zamisast petrol.price -> petrol_history.price
+poprawić ten widok jest niepoprawny
+
+To samo do widok invoice_status
+
+Do grupowania dodawaćklucz główny
+
+Aktywne zniżki - zamiast null można sztucznie zawyżyć datę
+
+
+Suma obsłużonych transakcji przez pracowników - zamiast widoku to procedura (od - do)
+
+widok 9. lepiej zrobić jak oprocedurę albo funkcjęalbo dodać do widoku daty.
+
+Poprawić PRINT -> throw , pozbyć się printów
+
+schematy TRY CATCH,
+ROLLBACK
+przy procedurach roczpoczęcie i zakońćzenie tankowania.
+
+6.procedura
+
+ubrać w schemat transakcja.
+
+
+
+Dodać "select * from .." przy widokach
