@@ -1038,7 +1038,7 @@ END;
 ```
 **13. Funkcja całkowita sprzedaż paliwa przez dystrybutor**
 
-Funkcja '"fn_total_fuel_sales_by_distributor" oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
+Funkcja "fn_total_fuel_sales_by_distributor" oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
 Suma wartości sprzedaży jest następnie zwracana jako wynik. (FA)
 
 ```sql
@@ -1060,7 +1060,7 @@ END;
 ```
 **14. Funkcja do sprawdzania dostępności pracownika**
 
-Funkcja '"fn_check_employee_availability" sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
+Funkcja "fn_check_employee_availability" sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
 Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny). (FA)
 
 ```sql
@@ -1092,8 +1092,67 @@ BEGIN
 END;
 ```
 ## Triggery
-
 (dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
+
+**1. Trigger aktualizujący stan magazynowy paliwa po każdej transakcji**
+Trigger "tg_update_petrol_stock_after_transaction" automatycznie aktualizuje ilość paliwa w magazynie po każdej nowej transakcji. Gdy nowa transakcja zostanie dodana do tabeli transaction,
+ilość paliwa (amount) użytego w tej transakcji zostaje odjęta od dostępnej ilości paliwa (in_stock) w tabeli petrol. (FA)
+
+```sql
+CREATE TRIGGER tg_update_petrol_stock_after_transaction
+ON [transaction]
+AFTER INSERT
+AS
+BEGIN
+    UPDATE petrol
+    SET in_stock = in_stock - i.amount
+    FROM inserted i
+    JOIN pump p ON p.pump_id = i.pump_id
+    WHERE petrol.petrol_id = p.petrol_id;
+END;
+```
+
+**2. Trigger sprawdzający, czy data rozpoczęcia rabatu jest wcześniejsza niż data zakończenia**
+Trigger "tg_check_discount_dates" sprawdza poprawność dat rabatu. Po dodaniu lub aktualizacji rekordu w tabeli discount, trigger weryfikuje,
+czy data rozpoczęcia (start_date) jest wcześniejsza niż data zakończenia (end_date). Jeśli data rozpoczęcia jest późniejsza lub równa dacie zakończenia, transakcja zostaje cofnięta, a użytkownik otrzymuje komunikat o błędzie. (FA)
+
+```sql
+CREATE TRIGGER tg_check_discount_dates
+ON discount
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted
+        WHERE start_date >= end_date
+    )
+    BEGIN
+        RAISERROR ('Start date must be earlier than end date', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+```
+**3. Trigger sprawdzający poprawność numeru NIP przed wstawieniem nowej faktury**
+Trigger "tg_validate_invoice_nip" weryfikuje poprawność numeru NIP przed dodaniem nowej faktury do tabeli invoice. Po dodaniu nowej faktury, trigger sprawdza, czy numer NIP ma dokładnie 10 znaków. Jeśli długość numeru NIP jest inna niż 10 znaków, transakcja zostaje cofnięta, a użytkownik otrzymuje komunikat o błędzie. (FA)
+
+```sql
+CREATE TRIGGER tg_validate_invoice_nip
+ON invoice
+AFTER INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted
+        WHERE LEN(NIP) != 10
+    )
+    BEGIN
+        RAISERROR ('Invalid NIP number', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+```
 
 
 
