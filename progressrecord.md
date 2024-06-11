@@ -49,6 +49,26 @@ Dodać case do tabel
 
 
 **11-06-2024 Filip Przepiórka**
+**What's done?**
+
+>Prowadzenie w 95% dokumentacji
+
+>Udział w tworzeniu tabel
+
+>Stworzenie widoków:
+  >*vw_bill_value*
+  >*vw_total_year_amount*
+  >*vw_distributor_fuel_usage*
+
+>Stworzenie procedur:
+  >*sp_add_new_supply*
+  >*sp_start_fueling*
+  >*sp_update_distributor_status*
+
+>Funkcje:
+  >*fn_check_dist_status*
+  >*fn_total_supply_cost_per_supplier*
+
 **Update record:**
 
 >Poprawienie danych testowych w tabeli *transaction*
