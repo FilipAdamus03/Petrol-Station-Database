@@ -77,4 +77,6 @@ Dodać case do tabel
 >Poprawione wszystkie procedury: wzbogacone o TRY, CATCH, ROLLBACK, THROW
 
 **11-06-2024 Rafał Dubiel**
->Zmienienie print -> RAISERROR w *sp_start_fueling*
+>Zmienienie print -> RAISERROR 
+  poprawa semantyki kodu
+>trigger *aktualizacja_pistoletu_po_tankowaniu*
