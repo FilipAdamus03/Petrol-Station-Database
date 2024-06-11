@@ -66,3 +66,5 @@ Dodać "select * from .." przy widokach
 
 >Poprawienie widoku *vw_distributor_fuel_usage* - dodanie do niego daty
 
+**11-06-2024 Rafał Dubiel**
+>Zmienienie print -> RAISERROR w sp_start_fueling
