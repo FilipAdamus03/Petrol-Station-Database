@@ -27,19 +27,25 @@ poprawić ten widok jest niepoprawny</s>
 
 <s>widok 9. lepiej zrobić jak oprocedurę albo funkcjęalbo dodać do widoku daty.</s>
 
-Poprawić PRINT -> throw , pozbyć się printów
+<s>Poprawić PRINT -> throw , pozbyć się printów</s>
 
-schematy TRY CATCH,
+<s>schematy TRY CATCH,
 ROLLBACK
-przy procedurach roczpoczęcie i zakońćzenie tankowania.
+przy procedurach roczpoczęcie i zakońćzenie tankowania.</s>
 
-6.procedura
+<s>6.procedura
 
-ubrać w schemat transakcja.
+ubrać w schemat transakcja.</s>
 
 
 
-Dodać "select * from .." przy widokach
+Dodać jak wygląda tabela przy widokach (select *)
+
+Dodać sposób użycia procedur
+
+Dodać triggery
+
+Dodać case do tabel
 
 
 **11-06-2024 Filip Przepiórka**
