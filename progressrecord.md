@@ -17,9 +17,9 @@ Aktualnienia opisów, kodów i samej bazy danych
 zamisast petrol.price -> petrol_history.price
 poprawić ten widok jest niepoprawny</s>
 
-To samo do widok invoice_status
+<s>To samo do widok invoice_details</s>
 
-Do grupowania dodawaćklucz główny
+Do grupowania dodawać klucz główny
 
 Aktywne zniżki - zamiast null można sztucznie zawyżyć datę
 
@@ -52,6 +52,9 @@ Nowe dane testowe w tabeli *supply*
 
 Aktualizacja daty w tabeli *discount*
 
+Nowe dane testowe w tabeli  *petrol_history*
+
 Poprawienie widoku *vw_bill_value* żeby brał historyczne ceny dla dat.
 
-Nowe dane testowe w tabeli  *petrol_history*
+Poprawienie widoku *invoice_details* na takiej samej zasadzie jak *vw_bill_value*
+
