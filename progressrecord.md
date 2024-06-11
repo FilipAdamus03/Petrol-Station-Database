@@ -47,6 +47,9 @@ Dodać "select * from .." przy widokach
 Update record:
 
 Poprawienie danych testowych w tabeli *transaction*
+
 Nowe dane testowe w tabeli *supply*
+
 Aktualizacja daty w tabeli *discount*
+
 Nowe dane testowe w tabeli  *petrol_history*
