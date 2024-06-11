@@ -27,22 +27,48 @@ poprawić ten widok jest niepoprawny</s>
 
 <s>widok 9. lepiej zrobić jak oprocedurę albo funkcjęalbo dodać do widoku daty.</s>
 
-Poprawić PRINT -> throw , pozbyć się printów
+<s>Poprawić PRINT -> throw , pozbyć się printów</s>
 
-schematy TRY CATCH,
+<s>schematy TRY CATCH,
 ROLLBACK
-przy procedurach roczpoczęcie i zakońćzenie tankowania.
+przy procedurach roczpoczęcie i zakońćzenie tankowania.</s>
 
-6.procedura
+<s>6.procedura
 
-ubrać w schemat transakcja.
+ubrać w schemat transakcja.</s>
 
 
 
-Dodać "select * from .." przy widokach
+Dodać jak wygląda tabela przy widokach (select *)
+
+Dodać sposób użycia procedur
+
+Dodać triggery
+
+Dodać case do tabel
 
 
 **11-06-2024 Filip Przepiórka**
+**What's done?**
+
+>Prowadzenie w 95% dokumentacji
+
+>Udział w tworzeniu tabel
+
+>Stworzenie widoków:
+  >*vw_bill_value*
+  >*vw_total_year_amount*
+  >*vw_distributor_fuel_usage*
+
+>Stworzenie procedur:
+  >*sp_add_new_supply*
+  >*sp_start_fueling*
+  >*sp_update_distributor_status*
+
+>Funkcje:
+  >*fn_check_dist_status*
+  >*fn_total_supply_cost_per_supplier*
+
 **Update record:**
 
 >Poprawienie danych testowych w tabeli *transaction*
@@ -66,3 +92,11 @@ Dodać "select * from .." przy widokach
 
 >Poprawienie widoku *vw_distributor_fuel_usage* - dodanie do niego daty
 
+>Poprawienie *sp_start_fueling* dodając TRY, CATCH, ROLLBACK, THROW
+
+>Poprawione wszystkie procedury: wzbogacone o TRY, CATCH, ROLLBACK, THROW
+
+**11-06-2024 Rafał Dubiel**
+>Zmienienie print -> RAISERROR 
+  poprawa semantyki kodu
+>trigger *aktualizacja_pistoletu_po_tankowaniu*
