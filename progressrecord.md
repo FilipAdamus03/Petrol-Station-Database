@@ -12,10 +12,10 @@ Aktualnienia opisów, kodów i samej bazy danych
 
 **DATA 06.06.2024 **
 
-Widok bill_value ---
+<s>Widok bill_value ---
 
 zamisast petrol.price -> petrol_history.price
-poprawić ten widok jest niepoprawny
+poprawić ten widok jest niepoprawny</s>
 
 To samo do widok invoice_status
 
@@ -51,5 +51,7 @@ Poprawienie danych testowych w tabeli *transaction*
 Nowe dane testowe w tabeli *supply*
 
 Aktualizacja daty w tabeli *discount*
+
+Poprawienie widoku *vw_bill_value* żeby brał historyczne ceny dla dat.
 
 Nowe dane testowe w tabeli  *petrol_history*
