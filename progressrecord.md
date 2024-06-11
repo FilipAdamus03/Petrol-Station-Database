@@ -50,7 +50,7 @@ Dodać "select * from .." przy widokach
 >Nowe dane testowe w tabeli *supply*
 
 >Aktualizacja daty w tabeli *discount*
-  - zamiast null w końcu zniżki, sztucznie zawyżona data końca
+  >- zamiast null w końcu zniżki, sztucznie zawyżona data końca
     
 >Nowe dane testowe w tabeli  *petrol_history*
 
@@ -59,8 +59,8 @@ Dodać "select * from .." przy widokach
 >Poprawienie widoku *invoice_details* na takiej samej zasadzie jak *vw_bill_value*
 
 >Grupowanie po kluczach głównych:
-  - *vw_total_year_amount*
-  - *vw_avg_monthly_petrol_price*
+  >- *vw_total_year_amount*
+  >- *vw_avg_monthly_petrol_price*
 
 >Zmienienie widoku *vw_employee_transaction_count* na procedurę *sp_employee_transaction_count* (od - do)
 
