@@ -66,5 +66,9 @@ Dodać "select * from .." przy widokach
 
 >Poprawienie widoku *vw_distributor_fuel_usage* - dodanie do niego daty
 
+>Poprawienie *sp_start_fueling* dodając TRY, CATCH, ROLLBACK, THROW
+
+>Poprawione wszystkie procedury: wzbogacone o TRY, CATCH, ROLLBACK, THROW
+
 **11-06-2024 Rafał Dubiel**
->Zmienienie print -> RAISERROR w sp_start_fueling
+>Zmienienie print -> RAISERROR w *sp_start_fueling*
