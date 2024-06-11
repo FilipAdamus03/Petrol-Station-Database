@@ -41,3 +41,12 @@ ubrać w schemat transakcja.
 
 
 Dodać "select * from .." przy widokach
+
+
+**11-06-2024 Filip Przepiórka**
+Update record:
+
+Poprawienie danych testowych w tabeli *transaction*
+Nowe dane testowe w tabeli *supply*
+Aktualizacja daty w tabeli *discount*
+Nowe dane testowe w tabeli  *petrol_history*
