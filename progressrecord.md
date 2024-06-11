@@ -19,14 +19,13 @@ poprawić ten widok jest niepoprawny</s>
 
 <s>To samo do widok invoice_details</s>
 
-Do grupowania dodawać klucz główny
+<s>Do grupowania dodawać klucz główny</s>
 
-Aktywne zniżki - zamiast null można sztucznie zawyżyć datę
+<s>Aktywne zniżki - zamiast null można sztucznie zawyżyć datę</s>
 
+<s>Suma obsłużonych transakcji przez pracowników - zamiast widoku to procedura (od - do)</s>
 
-Suma obsłużonych transakcji przez pracowników - zamiast widoku to procedura (od - do)
-
-widok 9. lepiej zrobić jak oprocedurę albo funkcjęalbo dodać do widoku daty.
+<s>widok 9. lepiej zrobić jak oprocedurę albo funkcjęalbo dodać do widoku daty.</s>
 
 Poprawić PRINT -> throw , pozbyć się printów
 
@@ -44,17 +43,26 @@ Dodać "select * from .." przy widokach
 
 
 **11-06-2024 Filip Przepiórka**
-Update record:
+**Update record:**
 
-Poprawienie danych testowych w tabeli *transaction*
+>Poprawienie danych testowych w tabeli *transaction*
 
-Nowe dane testowe w tabeli *supply*
+>Nowe dane testowe w tabeli *supply*
 
-Aktualizacja daty w tabeli *discount*
+>Aktualizacja daty w tabeli *discount*
+  - zamiast null w końcu zniżki, sztucznie zawyżona data końca
+    
+>Nowe dane testowe w tabeli  *petrol_history*
 
-Nowe dane testowe w tabeli  *petrol_history*
+>Poprawienie widoku *vw_bill_value* żeby brał historyczne ceny dla dat.
 
-Poprawienie widoku *vw_bill_value* żeby brał historyczne ceny dla dat.
+>Poprawienie widoku *invoice_details* na takiej samej zasadzie jak *vw_bill_value*
 
-Poprawienie widoku *invoice_details* na takiej samej zasadzie jak *vw_bill_value*
+>Grupowanie po kluczach głównych:
+  - *vw_total_year_amount*
+  - *vw_avg_monthly_petrol_price*
+
+>Zmienienie widoku *vw_employee_transaction_count* na procedurę *sp_employee_transaction_count* (od - do)
+
+>Poprawienie widoku *vw_distributor_fuel_usage* - dodanie do niego daty
 
