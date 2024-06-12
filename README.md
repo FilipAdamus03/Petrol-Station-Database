@@ -1306,6 +1306,34 @@ BEGIN
 END;
 ```
 
+**4. Trigger aktualizujący zapas paliwa po pojawieniu się nowej dostawy w tabeli supply**
 
+```sql
+CREATE OR ALTER TRIGGER [dbo].[tg_update_stock]
+ON [dbo].[supply]
+AFTER INSERT
+AS
+BEGIN
+    UPDATE p
+    SET p.in_stock = p.in_stock + i.amount
+    FROM petrol p
+    JOIN inserted i ON p.petrol_id = i.petrol_id;
+END; 
+```
 
+**5.Trigger aktualizujący status pistoletu po pojawieniu się nowej transakcji w tabeli [transaction]**
+
+```sql
+CREATE OR ALTER TRIGGER [dbo].[tg_update_pump_status]
+ON [dbo].[transaction]
+AFTER INSERT
+AS
+BEGIN
+    UPDATE pump
+    SET status = 'up'
+    FROM pump p
+    JOIN inserted AS i
+    ON p.pump_id = i.pump_id;
+END;
+```
 [wzor_dok.md](https://github.com/FilipAdamus03/Petrol-Station-Database/files/14943695/wzor_dok.md)
