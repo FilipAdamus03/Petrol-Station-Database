@@ -1039,10 +1039,10 @@ GO
 
 **9. Funkcja sprawdzania statusu dystrybutora**
 
-Funkcja "fn_check_dist_status" służy do sprawdzania statusu dystrybutora, do którego jest przypisana konkretna pompa. (FP)
+Funkcja "fn_check_pump_status" służy do sprawdzania statusu pistoletu. (FP)
 
 ```sql
-CREATE FUNCTION fn_check_dist_status (@pump_id INT)
+CREATE FUNCTION fn_check_pump_status (@pump_id INT)
 RETURNS VARCHAR(50)
 AS
 BEGIN
@@ -1142,39 +1142,7 @@ BEGIN
     RETURN @total_sales;
 END;
 ```
-**13. Funkcja do sprawdzania dostępności pracownika**
 
-Funkcja "fn_check_employee_availability" sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
-Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny). (FA)
-
-```sql
-CREATE FUNCTION fn_check_employee_availability (
-@employee_id INT,
-@start_date DATETIME,
-@end_date DATETIME
-) RETURNS BIT
-AS
-BEGIN
-    DECLARE @availability BIT;
-
-    IF EXISTS (
-        SELECT 1
-        FROM schedule
-        WHERE employee_id = @employee_id
-          AND (@start_date BETWEEN start_date AND end_date
-               OR @end_date BETWEEN start_date AND end_date)
-    )
-    BEGIN
-        SET @availability = 0;
-    END
-    ELSE
-    BEGIN
-        SET @availability = 1;
-    END
-
-    RETURN @availability;
-END;
-```
 ## Triggery
 (dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
 

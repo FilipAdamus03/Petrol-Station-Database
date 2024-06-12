@@ -39,7 +39,7 @@ ubrać w schemat transakcja.</s>
 
 
 
-Dodać jak wygląda tabela przy widokach (select *)
+<s>Dodać jak wygląda tabela przy widokach (select *)</s>
 
 Dodać sposób użycia procedur
 
