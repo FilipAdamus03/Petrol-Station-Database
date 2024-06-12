@@ -82,7 +82,7 @@ Jako pracownik, chcę wiedzieć jaka cena paliwa była w określonym dniu.
 
 ## Diagram przedstawiający schemat bazy danych
 
-![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/d5a1dede-882c-412a-9710-5fbebf36e515)
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/b1a86e46-bac3-4a2a-9c3c-a6da99a4ab42)
 
 
 ## Opis poszczególnych tabel
@@ -206,7 +206,7 @@ Nazwa tabeli: discount
 | discount_name | varchar(50) | Nazwa rabatu |
 | value | float | Wartość rabatu |
 | start_date | datetime | Data rozpoczęcia zniżki |
-| end_date | datetime | Data zakończenia zniżki (zezwala na wartość NULL) |
+| end_date | datetime | Data zakończenia zniżki |
 
 
 
@@ -241,7 +241,7 @@ CREATE TABLE dbo.discount (
 	discount_name VARCHAR(50) NOT NULL,
 	value FLOAT NOT NULL,
 	start_date datetime NOT NULL,
-	end_date datetime NULL,
+	end_date datetime NOT NULL,
 	CONSTRAINT PK_discount PRIMARY KEY CLUSTERED (discount_id ASC)
 ) ON [PRIMARY];
 
@@ -443,26 +443,34 @@ Uwzględnione zostały również takie wytyczne jak numer transakcji czy ilość
 uwzględniona jest zniżka w miejscach gdzie ona widnieje. (FP)
 
 ```sql
-create view vw_bill_value AS
+CREATE VIEW vw_bill_value AS
 SELECT
   t.transaction_id,
   t.pump_id,
   t.employee_id,
   p.name,
   t.amount,
-  p.price,
+  ph.price,
   d.value as discount,
-  ROUND(t.amount * p.price *
+  ROUND(t.amount * ph.price * 
   CASE
   WHEN d.value IS NULL THEN 1
-  ELSE (1-d.value)
+  ELSE (1-d.value) 
   END
   ,2) as bill_value
 FROM [transaction] t
 LEFT JOIN discount d ON d.discount_id = t.discount_id
 JOIN pump ON pump.pump_id = t.pump_id
-JOIN petrol p ON p.petrol_id = pump.petrol_id;
+JOIN petrol p ON p.petrol_id = pump.petrol_id
+JOIN petrol_history ph on ph.petrol_id = p.petrol_id
+AND ph.date = (
+	select MAX(date)
+	from petrol_history
+	where date <= t.date)
 ```
+
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/32a67e7a-94ff-4b01-8556-2960dcd0e024)
+
 
 **2. Całkowity koszt dostawy**
 
@@ -489,6 +497,9 @@ JOIN petrol p ON s.petrol_id = p.petrol_id
 JOIN supplier supp ON s.supplier_id = supp.supplier_id;
 ```
 
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/ef1b306d-959d-4345-baa4-7e7aaa898e17)
+
+
 **3. Status dystrybutorów i pistoletów**
 
 Widok "vw_distributor_pump_status" służy do prezentowania statusu dystrybutorów oraz przypisanych do nich pistoletów.
@@ -508,6 +519,9 @@ JOIN pump p ON d.distributor_no = p.distributor_no
 JOIN petrol pet ON p.petrol_id = pet.petrol_id;
 ```
 
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/b485ac9a-4194-4516-80d2-0bf8ce0bad75)
+
+
 **4. Szczegóły wszystkich faktur**
 
 Widok "vw_invoice_details" służy do prezentacji szczegółów każdej faktury.
@@ -523,17 +537,29 @@ SELECT
     i.plate,
     t.date AS transaction_date,
     p.name AS petrol_name,
-    ROUND(t.amount * p.price * 
+	t.amount,
+	ph.price,
+    ROUND(t.amount * ph.price * 
           CASE 
               WHEN d.value IS NULL THEN 1 
               ELSE (1 - d.value) 
-          END, 2) AS final_cost, t.employee_id
+          END, 2) AS final_cost, 
+	t.employee_id
 FROM invoice i
 JOIN [transaction] t ON i.transaction_id = t.transaction_id
 JOIN pump pmp ON t.pump_id = pmp.pump_id
 JOIN petrol p ON pmp.petrol_id = p.petrol_id
+join petrol_history ph on ph.petrol_id = p.petrol_id
+AND ph.date = (
+	select MAX(date)
+	from petrol_history
+	where date <= t.date)
 LEFT JOIN discount d ON t.discount_id = d.discount_id;
 ```
+
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/5183cad5-6bc8-443f-89ad-c4d5f0963198)
+
+
 **5. Całkowita sprzedaż danego paliwa przez lata**
 
 Widok vw_total_year_amount został stworzony w celu uzyskania rocznego podsumowania sprzedaży paliwa.
@@ -542,13 +568,15 @@ z uwzględnieniem ewentualnych zniżek, w podziale na lata. (FP)
 
 ```sql
 create view vw_total_year_amount as
-select YEAR(date) AS year, SUM(t.amount) as total_amount,name,ROUND(SUM((t.amount*p.price*ISNULL(d.value,1))),2) as total_price from [transaction] as t
+select YEAR(date) AS year, SUM(t.amount) as total_amount,name from [transaction] as t
 left join discount d on d.discount_id = t.discount_id
 join pump on pump.pump_id = t.pump_id
 join petrol as p on p.petrol_id = pump.petrol_id
-group by name, YEAR(date)
-
+group by p.petrol_id,YEAR(date), name
 ```
+
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/7a167a39-7a50-453f-beb0-da84346fb8ba)
+
 
 **6. Aktywne zniżki**
 
@@ -562,45 +590,40 @@ FROM discount
 WHERE end_date IS NULL OR end_date > GETDATE();
 ```
 
-**7. Suma obsłużonych transakcji przez pracownika**
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/b25db9f2-3b72-4322-9ff0-9fc0db23978e)
 
-Widok "vw_employee_transaction_count" oblicza liczbę transakcji obsłużonych przez każdego pracownika.
-
-```sql
-CREATE VIEW vw_employee_transaction_count AS
-SELECT employee_id, COUNT(transaction_id) AS transaction_count
-FROM [transaction]
-GROUP BY employee_id;
-```
-
-**8. Średnia cena paliwa w miesiącu**
+**7. Średnia cena paliwa w miesiącu**
 
 Widok "vw_avg_monthly_petrol_price" powstał do obliczania średniej ceny paliwa dla każdego miesiąca w danym roku,
 z podziałem na poszczególne rodzaje paliwa.
 
 ```sql
 create view vw_avg_monthly_petrol_price as
-select year(date) as year, month(date) as month, p.petrol_id, name, avg(ph.price) as average
+select p.petrol_id, year(date) as year, month(date) as month, name, avg(ph.price) as average_price
 from dbo.petrol_history as ph
 join dbo.petrol p on ph.petrol_id = p.petrol_id
-group by year(date), month(date), name, p.petrol_id
+group by p.petrol_id, year(date), month(date), name
 ```
 
-**9. Całkowita ilość danego paliwa jaka została zatankowana z danego dystrybutora.**
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/f23c64b4-027b-4c4f-abfe-eb5f5e55c044)
+
+
+**8. Całkowita ilość danego paliwa jaka została zatankowana z danego dystrybutora.**
 
 Widok "vw_distributor_fuel_usage" jest zaprojektowany do monitorowania zużycia paliwa przez dystrybutory na stacji paliw.
 Jego głównym celem jest dostarczenie informacji o całkowitej ilości paliwa sprzedanej przez każdy dystrybutor dla każdego rodzaju paliwa. (FP)
 
 ```sql
 create view vw_distributor_fuel_usage as
-select d.distributor_no, p.petrol_id, pet.name, SUM(t.amount) as total_amount
+select d.distributor_no, p.petrol_id,YEAR(date) as year,MONTH(date) as month, pet.name, SUM(t.amount) as total_amount
 from dbo.pump p
 join dbo.[transaction] t ON p.pump_id = t.pump_id
 join dbo.distributor d ON p.distributor_no = d.distributor_no
 join dbo.petrol pet on pet.petrol_id = p.petrol_id
-group by p.petrol_id, d.distributor_no, pet.name
+group by d.distributor_no,p.petrol_id, YEAR(date),MONTH(date), pet.name
 ```
 
+![image](https://github.com/fprzepio/Petrol-station-Database/assets/132128402/578be45c-9558-4abb-9cf2-e294a1521174)
 
 
 ## Procedury/funkcje
@@ -615,7 +638,7 @@ zwiększając jego ilość o dostarczoną ilość paliwa.
 W przypadku wystąpienia błędu transakcja jest wycofywana, aby zachować spójność danych. (FP)
 
 ```sql
-CREATE PROCEDURE sp_add_new_supply
+CREATE PROCEDURE dbo.sp_add_new_supply
     @supplier_id INT,
     @amount FLOAT,
     @date DATETIME,
@@ -626,78 +649,38 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
+        IF NOT EXISTS (SELECT 1 FROM supplier WHERE supplier_id = @supplier_id)
+        BEGIN
+            THROW 50005, 'Nie ma dostawcy o takim ID', 1;
+        END;
+
+		IF NOT EXISTS (SELECT 1 FROM petrol WHERE petrol_id = @petrol_id)
+        BEGIN
+            THROW 50005, 'Nie ma paliwa o takim ID', 1;
+        END;
+
+        IF @date < (SELECT MAX(date) FROM supply)
+        BEGIN
+            THROW 50002, 'Data dostawy nie może być wcześniejsza niż ostatnia dostawa', 1;
+        END;
+
         -- Dodanie nowej dostawy
         INSERT INTO supply (supplier_id, amount, date, petrol_id, price)
         VALUES (@supplier_id, @amount, @date, @petrol_id, @price);
 
-        -- Aktualizacja stanu magazynowego paliwa
-        UPDATE petrol
-        SET in_stock = in_stock + @amount
-        WHERE petrol_id = @petrol_id;
-
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
-        -- Zgłoszenie błędu
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
         THROW;
     END CATCH;
 END;
 ```
 
-**2. Procedura do monitorowania cen paliwa na przestrzeni czasu**
-
-Procedura sp_debug_price_change została stworzona w celu monitorowania i debugowania zmian cen paliwa w określonym okresie.
-Działa na podstawie nazwy paliwa i zakresu dat, sprawdzając ceny na początku i na końcu okresu,
-a następnie obliczając procentową zmianę ceny. 
-
-```sql
-CREATE   PROCEDURE sp_debug_price_change (
-    @start_date DATETIME,
-    @end_date DATETIME,
-    @petrol_name VARCHAR(50)
-)
-AS
-BEGIN
-    DECLARE @start_price FLOAT = NULL;
-    DECLARE @end_price FLOAT = NULL;
-    DECLARE @percentage_change FLOAT;
-
-    -- Cena paliwa na początku okresu
-    SELECT TOP 1 @start_price = ph.price
-    FROM petrol_history ph
-    JOIN petrol p ON ph.petrol_id = p.petrol_id
-    WHERE p.name = @petrol_name AND ph.date <= @start_date
-    ORDER BY ph.date DESC;
-
-    -- Debugowanie: wyświetlanie ceny na początku okresu
-    PRINT 'Cena na początku okresu: ' + CAST(@start_price AS VARCHAR);
-
-    -- Cena paliwa na końcu okresu
-    SELECT TOP 1 @end_price = ph.price
-    FROM petrol_history ph
-    JOIN petrol p ON ph.petrol_id = p.petrol_id
-    WHERE p.name = @petrol_name AND ph.date <= @end_date
-    ORDER BY ph.date DESC;
-
-    -- Debugowanie: wyświetlanie ceny na końcu okresu
-    PRINT 'Cena na końcu okresu: ' + CAST(@end_price AS VARCHAR);
-
-    -- Procentowa zmiana ceny
-    IF @start_price IS NULL OR @end_price IS NULL
-    BEGIN
-        PRINT 'Jedna z cen jest NULL. Zwracam NULL.';
-        RETURN; -- Zwróć NULL, jeśli nie ma takich dat
-    END
-
-    SET @percentage_change = ((@end_price - @start_price) / @start_price) * 100;
-
-    -- Debugowanie: wyświetlanie procentowej zmiany ceny
-    PRINT 'Procentowa zmiana ceny: ' + CAST(@percentage_change AS VARCHAR);
-END;
-```
-
-**3. Procedura rozpoczęcia procesu tankowania**
+**2. Procedura rozpoczęcia procesu tankowania**
 
 Procedura sp_start_fueling umożliwia rozpoczęcie tankowania, 
 sprawdzając stan dystrybutora i pistoletu przed zmianą statusu pistoletu na "up". (FP)
@@ -707,50 +690,61 @@ CREATE PROCEDURE sp_start_fueling
     @pump_id INT
 AS
 BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-	    -- Sprawdź status dystrybutora dla danego pistoletu
-    DECLARE @distributor_status VARCHAR(50);
-    SELECT @distributor_status = d.status
-    FROM pump p
-    JOIN distributor d ON p.distributor_no = d.distributor_no
-    WHERE p.pump_id = @pump_id;
+        -- Sprawdź status dystrybutora dla danego pistoletu
+        DECLARE @distributor_status VARCHAR(50);
+        SELECT @distributor_status = d.status
+        FROM pump p
+        JOIN distributor d ON p.distributor_no = d.distributor_no
+        WHERE p.pump_id = @pump_id;
 
-    -- Jeżeli status dystrybutora jest 'down', nie można rozpocząć tankowania
-    IF @distributor_status = 'down'
-    BEGIN
-        PRINT 'Dystrybutor nieczynny. Nie można rozpocząć tankowania';
-        RETURN;
-    END
+        -- Jeżeli status dystrybutora jest 'down', nie można rozpocząć tankowania
+        IF @distributor_status = 'down'
+        BEGIN
+            RAISERROR ('Dystrybutor nieczynny. Nie można rozpocząć tankowania', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END;
 
-    -- Sprawdzenie, czy pistolet jest w stanie "down" / "up"
-	    IF EXISTS (
-        SELECT 1
-        FROM dbo.pump
-        WHERE pump_id = @pump_id
-        AND status = 'up'
-    )
-	BEGIN
-		PRINT 'Ktoś już tankuje. Proszę wybrać inny dystrybutor.';
-	END
+        -- Sprawdzenie, czy pistolet jest w stanie "down" / "up"
+        IF EXISTS (
+            SELECT 1
+            FROM dbo.pump
+            WHERE pump_id = @pump_id
+            AND status = 'in use'
+        )
+        BEGIN
+            RAISERROR ('Ktoś już tankuje. Proszę wybrać inny dystrybutor.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END;
 
-    IF EXISTS (
-        SELECT 1
-        FROM dbo.pump
-        WHERE pump_id = @pump_id
-        AND status = 'down'
-    )
-    BEGIN
-        -- Zmiana stanu pistoletu na "up"
-        UPDATE dbo.pump
-        SET status = 'up'
-        WHERE pump_id = @pump_id;
+        IF EXISTS (
+            SELECT 1
+            FROM dbo.pump
+            WHERE pump_id = @pump_id
+            AND status = 'up'
+        )
+        BEGIN
+            -- Zmiana stanu pistoletu na "in use"
+            UPDATE dbo.pump
+            SET status = 'in use'
+            WHERE pump_id = @pump_id;
 
-        PRINT 'Rozpoczęto tankowanie. Status pistoletu zmieniony na "up".';
-    END
+            RAISERROR ('Rozpoczęto tankowanie. Status pistoletu zmieniony na "in use".', 1, 1);
+            COMMIT TRANSACTION;
+        END
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH;
 END;
 ```
 
-**4. Procedura zakończenia procesu tankowania**
+**3. Procedura zakończenia procesu tankowania**
 
 Procedura sp_finish_refueling jest używana do zakończenia procesu tankowania. 
 Obejmuje kilka kroków: sprawdzenie, czy jest wystarczająca ilość paliwa w zapasie, 
@@ -767,47 +761,44 @@ BEGIN
     DECLARE @petrol_id INT;
     DECLARE @current_stock FLOAT;
 
-    BEGIN TRANSACTION;
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-    -- Odczytaj jakie paliwo jest na danym pistolecie
-    SELECT @petrol_id = petrol_id
-    FROM pump
-    WHERE pump_id = @pump_id;
-
-    -- Odczytaj aktualny zapas paliwa
-    SELECT @current_stock = in_stock
-    FROM petrol
-    WHERE petrol_id = @petrol_id;
-
-    -- Sprawdź czy jest wystarczająco paliwa w zapasie
-    IF @current_stock >= @amount
-    BEGIN
-        -- Dodaj nową transackcję
-        INSERT INTO dbo.[transaction] (pump_id, amount, employee_id, date, discount_id)
-        VALUES (@pump_id, @amount, @employee_id, GETDATE(), @discount_id);
-
-        -- Zaktualizuj zapas paliwa
-        UPDATE petrol
-        SET in_stock = in_stock - @amount
-        WHERE petrol_id = @petrol_id;
-
-        -- Zaktualizuj status pistoletu
-        UPDATE pump
-        SET status = 'up'
+        -- Odczytaj jakie paliwo jest na danym pistolecie
+        SELECT @petrol_id = petrol_id
+        FROM pump
         WHERE pump_id = @pump_id;
 
-        COMMIT TRANSACTION;
-    END
-    ELSE
-    BEGIN
-        -- Jeśli brakuje paliwa
-        ROLLBACK TRANSACTION;
-        RAISERROR('Not enough fuel in stock.', 16, 1);
-    END
+        -- Odczytaj aktualny zapas paliwa
+        SELECT @current_stock = in_stock
+        FROM petrol
+        WHERE petrol_id = @petrol_id;
+
+        -- Sprawdź czy jest wystarczająco paliwa w zapasie
+        IF @current_stock >= @amount
+        BEGIN
+            -- Dodaj nową transakcję
+            INSERT INTO dbo.[transaction] (pump_id, amount, employee_id, date, discount_id)
+            VALUES (@pump_id, @amount, @employee_id, GETDATE(), @discount_id);
+
+            COMMIT TRANSACTION;
+        END
+        ELSE
+        BEGIN
+            -- Jeśli brakuje paliwa
+            RAISERROR('Niewystarczająca ilość paliwa.', 16, 1);
+            ROLLBACK TRANSACTION;
+        END
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        RAISERROR ('Błąd w użyciu procedury', 16, 1);
+    END CATCH
 END;
 ```
 
-**5. Procedura aktualizacji statusu dystrybutora**
+**4. Procedura aktualizacji statusu dystrybutora**
 
 Procedura "sp_update_distributor_status" służy do aktualizowania statusu dystrybutora w bazie danych, 
 a także aktualizowania statusu powiązanych pomp w zależności od nowego statusu dystrybutora. (FP)
@@ -818,28 +809,43 @@ CREATE PROCEDURE sp_update_distributor_status
     @new_status VARCHAR(50)
 AS
 BEGIN
-    -- Zmieniamy status dystrybutora
-    UPDATE dbo.distributor
-    SET status = @new_status
-    WHERE distributor_no = @distributor_no;
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-    -- Jeżeli nowy status dystrybutora to 'down', zmieniamy statusy powiązanych pomp
-    IF @new_status = 'down'
-    BEGIN
-        UPDATE dbo.pump
-        SET status = 'down'
+        -- Zmieniamy status dystrybutora
+        UPDATE dbo.distributor
+        SET status = @new_status
         WHERE distributor_no = @distributor_no;
-    END
 
-	IF @new_status = 'up'
-    BEGIN
-        UPDATE dbo.pump
-        SET status = 'up'
-        WHERE distributor_no = @distributor_no;
-    END
+        -- Jeżeli nowy status dystrybutora to 'down', zmieniamy statusy powiązanych pomp na 'down'
+        IF @new_status = 'down'
+        BEGIN
+            UPDATE dbo.pump
+            SET status = 'down'
+            WHERE distributor_no = @distributor_no;
+        END;
+
+        -- Jeżeli nowy status dystrybutora to 'up', zmieniamy statusy powiązanych pomp na 'up'
+        IF @new_status = 'up'
+        BEGIN
+            UPDATE dbo.pump
+            SET status = 'up'
+            WHERE distributor_no = @distributor_no;
+        END;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+        THROW;
+    END CATCH;
 END;
 ```
-**6. Procedura aktualizacji cen paliwa**
+
+**5. Procedura aktualizacji cen paliwa**
 
 Procedura "sp_update_fuel_price" aktualizowania ceny paliwa w bazie danych 
 dla określonego typu paliwa oraz rejestrowania historii zmian cen.
@@ -850,16 +856,39 @@ CREATE PROCEDURE sp_update_fuel_price
 @new_price MONEY
 AS
 BEGIN
-    UPDATE petrol
-    SET price = @new_price
-    WHERE petrol_id = @petrol_id;
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-    INSERT INTO petrol_history (petrol_id, price, date)
-    VALUES (@petrol_id, @new_price, GETDATE());
+		IF NOT EXISTS (SELECT 1 FROM petrol WHERE petrol_id = @petrol_id)
+        BEGIN
+            THROW 50005, 'Nie ma paliwa o takim ID', 1;
+        END;
+
+        -- Aktualizacja ceny paliwa
+        UPDATE petrol
+        SET price = @new_price
+        WHERE petrol_id = @petrol_id;
+
+        -- Dodanie wpisu do historii cen paliwa
+        INSERT INTO petrol_history (petrol_id, price, date)
+        VALUES (@petrol_id, @new_price, GETDATE());
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        -- Sprawdzenie, czy transakcja jest aktywna i wycofanie jej w przypadku błędu
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+
+        -- Zgłoszenie błędu
+        THROW;
+    END CATCH;
 END;
 ```
 
-**7. Procedura dodanie zniżki z walidacją**
+**6. Procedura dodanie zniżki z walidacją**
 
 Procedura "sp_add_new_discount_with_validation" dodaje nową zniżkę do tabeli discount po sprawdzeniu poprawności danych wejściowych. Procedura waliduje, czy wartość zniżki jest między 0 a 1 oraz czy data rozpoczęcia zniżki jest wcześniejsza niż data zakończenia.
 Jeśli walidacja przejdzie pomyślnie, nowa zniżka zostaje dodana do tabeli. (FA)
@@ -878,12 +907,12 @@ BEGIN
 
         IF @value <= 0 OR @value > 1
         BEGIN
-            THROW 50001, 'Discount value must be between 0 and 1', 1;
+            THROW 50001, 'Zniżka musi należeć do przedziału od 0 do 1', 1;
         END
 
         IF @start_date >= @end_date
         BEGIN
-            THROW 50002, 'Start date must be earlier than end date', 1;
+            THROW 50002, 'Data początkowa nie może być później niż data końcowa', 1;
         END
 
         INSERT INTO discount (discount_name, value, start_date, end_date)
@@ -898,7 +927,7 @@ BEGIN
 END;
 ```
 
-**8. Procedura generująca raport sprzedaży dla danego okresu**
+**7. Procedura generująca raport sprzedaży dla danego okresu**
 
 Procedura "sp_generate_sales_report" generuje raport sprzedaży dla danego okresu, grupując dane według pracowników i rodzajów paliwa. Wykorzystuje tabele transaction, pump, petrol i employee, aby uzyskać informacje o sprzedaży.
 Raport zawiera imię i nazwisko pracownika, nazwę paliwa, całkowitą ilość sprzedanego paliwa oraz całkowitą wartość sprzedaży. (FA)
@@ -911,6 +940,13 @@ CREATE PROCEDURE sp_generate_sales_report (
 AS
 BEGIN
     BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF @start_date >= @end_date
+        BEGIN
+            THROW 50002, 'Data początkowa nie może być później niż data końcowa', 1;
+        END
+
         SELECT 
             e.firstname + ' ' + e.lastname AS employee_name,
             p.name AS petrol_name,
@@ -923,12 +959,60 @@ BEGIN
         WHERE t.date BETWEEN @start_date AND @end_date
         GROUP BY e.firstname, e.lastname, p.name
         ORDER BY total_sales DESC;
+
+        COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
         THROW;
-    END CATCH
+    END CATCH;
 END;
 ```
+
+**8. Suma obsłużonych transakcji przez pracownika
+
+Procedura "dbo.sp_employee_transaction_count" do liczenia liczby transakcji obsłużonych przez danego pracownika
+
+```sql
+CREATE PROCEDURE dbo.sp_employee_transaction_count
+    @employee_id INT,
+    @start_date DATE,
+    @end_date DATE
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF NOT EXISTS (SELECT 1 FROM employee WHERE employee_id = @employee_id)
+        BEGIN
+            THROW 50001, 'Nie istnieje pracownik o podanym ID.', 1;
+        END;
+
+        SELECT 
+            employee_id, 
+            COUNT(transaction_id) AS transaction_count
+        FROM 
+            [transaction] t
+        WHERE
+            employee_id = @employee_id
+            AND t.date >= @start_date
+            AND t.date <= @end_date
+        GROUP BY 
+            employee_id;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END;
+        THROW;
+    END CATCH;
+END;
 
 **9. Funkcja sprawdzania sprzedaży paliwa w danym okresie**
 
@@ -953,7 +1037,7 @@ RETURN
 GO
 ```
 
-**10. Funkcja sprawdzania statusu dystrybutora**
+**9. Funkcja sprawdzania statusu dystrybutora**
 
 Funkcja "fn_check_dist_status" służy do sprawdzania statusu dystrybutora, do którego jest przypisana konkretna pompa. (FP)
 
@@ -974,7 +1058,7 @@ END;
 GO
 ```
 
-**11. Funkcja do sprawdzania zmiany cen paliwa**
+**10. Funkcja do sprawdzania zmiany cen paliwa**
 
 Funkcja "fn_price_change" oblicza procentową zmianę ceny danego typu paliwa w określonym przedziale czasowym.
 
@@ -1018,7 +1102,7 @@ END;
 GO
 ```
 
-**12. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
+**11. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
 
 Funkcja "fn_total_supply_cost_per_supplier" oblicza łączną wartość dostaw dla określonego dostawcy. (FP)
 
@@ -1036,7 +1120,7 @@ BEGIN
     RETURN @total_cost;
 END;
 ```
-**13. Funkcja całkowita sprzedaż paliwa przez dystrybutor**
+**12. Funkcja całkowita sprzedaż paliwa przez dystrybutor**
 
 Funkcja "fn_total_fuel_sales_by_distributor" oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
 Suma wartości sprzedaży jest następnie zwracana jako wynik. (FA)
@@ -1058,7 +1142,7 @@ BEGIN
     RETURN @total_sales;
 END;
 ```
-**14. Funkcja do sprawdzania dostępności pracownika**
+**13. Funkcja do sprawdzania dostępności pracownika**
 
 Funkcja "fn_check_employee_availability" sprawdza, czy pracownik jest dostępny w określonym zakresie dat. Wykorzystuje tabelę schedule do sprawdzenia, czy pracownik nie jest zaplanowany na dyżur w podanym okresie.
 Jeśli pracownik jest zaplanowany na jakikolwiek dyżur w tym zakresie dat, funkcja zwraca wartość 0 (niedostępny). W przeciwnym razie zwraca wartość 1 (dostępny). (FA)
