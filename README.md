@@ -237,11 +237,15 @@ Tabela: discount
 
 ```sql
 CREATE TABLE dbo.discount (
-	discount_id INT NOT NULL,
-	discount_name VARCHAR(50) NOT NULL,
-	value FLOAT NOT NULL,
-	start_date datetime NOT NULL,
-	end_date datetime NOT NULL,
+	[discount_id] [int] IDENTITY(4,1) NOT NULL,
+	[discount_name] [varchar](50) NOT NULL,
+	[value] [float] NOT NULL,
+	[start_date] [datetime] NOT NULL,
+	[end_date] [datetime] NOT NULL,
+	CONSTRAINT CK_discount_value
+		CHECK ([value] > 0 AND [value] <= 1),
+	CONSTRAINT CK_discount_dates
+		CHECK ([start_date] < [end_date]),
 	CONSTRAINT PK_discount PRIMARY KEY CLUSTERED (discount_id ASC)
 ) ON [PRIMARY];
 
@@ -254,6 +258,8 @@ Tabela: distributor
 CREATE TABLE dbo.distributor (
 	distributor_no INT NOT NULL,
 	status VARCHAR(50) NOT NULL,
+	CONSTRAINT CK_distributor_no
+		CHECK ([distributor_no] > 0),
 	CONSTRAINT PK_distributor PRIMARY KEY CLUSTERED (distributor_no ASC)
 ) ON [PRIMARY];
 
@@ -273,6 +279,8 @@ CREATE TABLE dbo.employee (
 	postal_code VARCHAR(10) NOT NULL,
 	country VARCHAR(20) NOT NULL,
 	phone VARCHAR(20) NOT NULL,
+	CONSTRAINT CK_employee_id
+		CHECK (employee_id > 0),
 	CONSTRAINT PK_employee PRIMARY KEY CLUSTERED (employee_id ASC)
 ) ON [PRIMARY];
 
@@ -287,6 +295,12 @@ CREATE TABLE dbo.invoice (
 	transaction_id INT NOT NULL,
 	NIP VARCHAR(10) NOT NULL,
 	plate VARCHAR(20) NULL,
+	CONSTRAINT CK_transaction_id
+		CHECK (transaction_id > 0),
+	CONSTRAINT CK_invoice_id
+		CHECK (invoice_id > 0),
+	CONSTRAINT CK_invoice_NIP
+		CHECK (NIP LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
 	CONSTRAINT PK_invoice PRIMARY KEY CLUSTERED (invoice_id ASC)
 ) ON [PRIMARY];
 
@@ -307,6 +321,10 @@ CREATE TABLE dbo.petrol (
 	name VARCHAR(50) NOT NULL,
 	in_stock FLOAT NOT NULL,
 	price MONEY NOT NULL,
+	CONSTRAINT CK_petrol_id
+		CHECK (petrol_id > 0),
+	CONSTRAINT CK_petrol_price
+		CHECK (price > 0),
 	CONSTRAINT PK_petrol PRIMARY KEY CLUSTERED (petrol_id ASC)
 ) ON [PRIMARY];
 
@@ -322,6 +340,10 @@ CREATE TABLE dbo.petrol_history (
 	petrol_id INT NOT NULL,
 	price MONEY NOT NULL,
 	[date] DATETIME NOT NULL,
+	CONSTRAINT CK_petrol_history_id
+		CHECK (petrol_history_id > 0),
+	CONSTRAINT CK_petrol_history_price_positive
+		CHECK (price > 0),
  CONSTRAINT PK_petrol_history PRIMARY KEY CLUSTERED (petrol_history_id ASC)
 ) ON [PRIMARY];
 
@@ -341,6 +363,12 @@ CREATE TABLE dbo.pump (
 	petrol_id INT NOT NULL,
 	distributor_no INT NOT NULL,
 	status VARCHAR(50) NOT NULL,
+	CONSTRAINT CK_pump_id
+		CHECK (pump_id > 0),
+	CONSTRAINT CK_pump_petrol_id
+		CHECK (petrol_id > 0),
+	CONSTRAINT CK_pump_distributor_no_positive
+		CHECK (distributor_no > 0),
 	CONSTRAINT PK_pump PRIMARY KEY CLUSTERED (pump_id ASC)
 ) ON [PRIMARY];
 
@@ -369,6 +397,8 @@ CREATE TABLE dbo.supplier (
 	city VARCHAR(30) NOT NULL,
 	country VARCHAR(30) NOT NULL,
 	phone VARCHAR(20) NOT NULL,
+	CONSTRAINT CK_supplier_id
+		CHECK (supplier_id > 0),
 	CONSTRAINT PK_supplier PRIMARY KEY CLUSTERED (supplier_id ASC)
 ) ON [PRIMARY];
 ```
@@ -385,6 +415,12 @@ CREATE TABLE dbo.supply (
 	[date] DATETIME NOT NULL,
 	petrol_id INT NOT NULL,
 	price MONEY NOT NULL,
+	CONSTRAINT CK_supply_id
+		CHECK (supply_id > 0),
+	CONSTRAINT CK_supply_price
+		CHECK (price > 0),
+	CONSTRAINT CK_supply_supplierid
+		CHECK (supplier_id > 0),
 	CONSTRAINT PK_supply PRIMARY KEY CLUSTERED (supply_id ASC)
 ) ON [PRIMARY];
 
@@ -412,6 +448,8 @@ CREATE TABLE dbo.transaction (
 	employee_id INT NOT NULL,
 	[date] DATETIME NOT NULL,
 	discount_id INT NULL,
+	CONSTRAINT CK_transaction_amount
+		CHECK (amount > 0),
 	CONSTRAINT PK_transaction PRIMARY KEY CLUSTERED (transaction_id ASC)
 ) ON [PRIMARY];
 
