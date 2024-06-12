@@ -1307,6 +1307,8 @@ END;
 ```
 
 **4. Trigger aktualizujący zapas paliwa po pojawieniu się nowej dostawy w tabeli supply**
+Trigger "tg_update_stock" automatycznie aktualizuje zapas paliwa w tabeli petrol po dodaniu nowej dostawy do tabeli supply.
+Po wstawieniu nowej dostawy, trigger zwiększa wartość zapasu paliwa o ilość dostarczoną, przypisaną do odpowiedniego identyfikatora paliwa (petrol_id).
 
 ```sql
 CREATE OR ALTER TRIGGER [dbo].[tg_update_stock]
@@ -1322,6 +1324,8 @@ END;
 ```
 
 **5.Trigger aktualizujący status pistoletu po pojawieniu się nowej transakcji w tabeli [transaction]**
+Trigger "tg_update_pump_status" aktualizuje status pistoletu w tabeli pump po pojawieniu się nowej transakcji w tabeli [transaction].
+Po dodaniu nowej transakcji, trigger ustawia status odpowiedniego pistoletu na "up", przypisując go do identyfikatora pistoletu (pump_id).
 
 ```sql
 CREATE OR ALTER TRIGGER [dbo].[tg_update_pump_status]
