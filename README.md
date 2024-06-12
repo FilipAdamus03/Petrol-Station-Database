@@ -680,6 +680,13 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_add_new_supply @supplier_id = 1, @amount = 1500, @date = '2024-06-12', @petrol_id = 3, @price = 5.16
+```
+
+
 **2. Procedura rozpoczęcia procesu tankowania**
 
 Procedura sp_start_fueling umożliwia rozpoczęcie tankowania, 
@@ -744,6 +751,13 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_start_fueling @pump_id = 9
+```
+
+
 **3. Procedura zakończenia procesu tankowania**
 
 Procedura sp_finish_refueling jest używana do zakończenia procesu tankowania. 
@@ -798,6 +812,13 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_finish_refueling @pump_id = 9, @amount = 44.5, @employee_id = 1
+```
+
+
 **4. Procedura aktualizacji statusu dystrybutora**
 
 Procedura "sp_update_distributor_status" służy do aktualizowania statusu dystrybutora w bazie danych, 
@@ -845,6 +866,14 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_update_distributor_status @distributor_no = 1, @new_status = 'down'
+exec sp_update_distributor_status @distributor_no = 1, @new_status = 'up'
+```
+
+
 **5. Procedura aktualizacji cen paliwa**
 
 Procedura "sp_update_fuel_price" aktualizowania ceny paliwa w bazie danych 
@@ -888,6 +917,13 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_update_fuel_price @petrol_id = 1, @new_price = 5.50
+```
+
+
 **6. Procedura dodanie zniżki z walidacją**
 
 Procedura "sp_add_new_discount_with_validation" dodaje nową zniżkę do tabeli discount po sprawdzeniu poprawności danych wejściowych. Procedura waliduje, czy wartość zniżki jest między 0 a 1 oraz czy data rozpoczęcia zniżki jest wcześniejsza niż data zakończenia.
@@ -926,6 +962,13 @@ BEGIN
     END CATCH
 END;
 ```
+
+Sposób użycia:
+
+```sql
+exec sp_add_new_discount_with_validation @discount_name = 'zniżka test', @value = 0.03, @start_date = '2024-06-05', @end_date = '2025-06-05'
+```
+
 
 **7. Procedura generująca raport sprzedaży dla danego okresu**
 
@@ -972,6 +1015,13 @@ BEGIN
 END;
 ```
 
+Sposób użycia:
+
+```sql
+exec sp_generate_sales_report @start_date = '2023-01-01', @end_date = '2024-01-01'
+```
+
+
 **8. Suma obsłużonych transakcji przez pracownika
 
 Procedura "dbo.sp_employee_transaction_count" do liczenia liczby transakcji obsłużonych przez danego pracownika
@@ -1013,6 +1063,13 @@ BEGIN
         THROW;
     END CATCH;
 END;
+```
+
+Sposób użycia:
+
+```sql
+exec sp_employee_transaction_count @employee_id = 2, @start_date = '2023-01-01', @end_date = '2024-01-01'
+```
 
 **9. Funkcja sprawdzania sprzedaży paliwa w danym okresie**
 
@@ -1036,8 +1093,14 @@ RETURN
 );
 GO
 ```
+Sposób użycia:
 
-**9. Funkcja sprawdzania statusu dystrybutora**
+```sql
+select * from fn_fuel_sales_by_date('2024-01-01', '2024-12-31')
+```
+
+
+**10. Funkcja sprawdzania statusu dystrybutora**
 
 Funkcja "fn_check_pump_status" służy do sprawdzania statusu pistoletu. (FP)
 
@@ -1058,7 +1121,14 @@ END;
 GO
 ```
 
-**10. Funkcja do sprawdzania zmiany cen paliwa**
+Sposób użycia:
+
+```sql
+select dbo.fn_check_pump_status(@pump_id)
+```
+
+
+**11. Funkcja do sprawdzania zmiany cen paliwa**
 
 Funkcja "fn_price_change" oblicza procentową zmianę ceny danego typu paliwa w określonym przedziale czasowym.
 
@@ -1102,7 +1172,14 @@ END;
 GO
 ```
 
-**11. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
+Sposób użycia:
+
+```sql
+select dbo.fn_price_change('2024-01-01', '2024-06-1', 'PB 95')
+```
+
+
+**12. Funkcja do sprawdzania całkowitej wartości dostarczonego paliwa przez dostawcę**
 
 Funkcja "fn_total_supply_cost_per_supplier" oblicza łączną wartość dostaw dla określonego dostawcy. (FP)
 
@@ -1120,6 +1197,13 @@ BEGIN
     RETURN @total_cost;
 END;
 ```
+
+Sposób użycia:
+
+```sql
+select dbo.fn_total_supply_cost_per_supplier(2)
+```
+
 
 ## Triggery
 (dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
