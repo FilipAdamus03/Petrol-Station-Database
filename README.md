@@ -1120,28 +1120,6 @@ BEGIN
     RETURN @total_cost;
 END;
 ```
-**12. Funkcja całkowita sprzedaż paliwa przez dystrybutor**
-
-Funkcja "fn_total_fuel_sales_by_distributor" oblicza całkowitą wartość sprzedaży paliwa przez konkretnego dystrybutora. Łączy dane z tabel transaction, pump i petrol, aby uzyskać ilość sprzedanego paliwa oraz cenę sprzedaży każdego typu paliwa.
-Suma wartości sprzedaży jest następnie zwracana jako wynik. (FA)
-
-```sql
-CREATE FUNCTION fn_total_fuel_sales_by_distributor (
-    @distributor_no INT
-) RETURNS FLOAT
-AS
-BEGIN
-    DECLARE @total_sales FLOAT;
-
-    SELECT @total_sales = SUM(t.amount * p.price)
-    FROM [transaction] t
-    JOIN pump pu ON t.pump_id = pu.pump_id
-    JOIN petrol p ON pu.petrol_id = p.petrol_id
-    WHERE pu.distributor_no = @distributor_no;
-
-    RETURN @total_sales;
-END;
-```
 
 ## Triggery
 (dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
