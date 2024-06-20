@@ -1,7 +1,3 @@
-USE [fprzepio]
-GO
-
-/****** Object:  Table [dbo].[invoice]    Script Date: 20.06.2024 12:05:27 ******/
 SET ANSI_NULLS ON
 GO
 
